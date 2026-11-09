@@ -368,10 +368,10 @@ function R(){if(gate())return;if(!isO()&&/^(shop|fixed|fform|clients|cedit|pform
   +'<h3 class="sh">Ricezione comunicazioni</h3><div class="sc"><span><b>Autorizzo</b><small>La ricezione di sconti, promozioni, buoni regalo e comunicazioni di marketing tramite whatsapp</small></span>'+tg2("mkt")+'</div><button class="sm" style="margin:18px 8px 0" onclick="ex()">'+(isO()?"Esci dall’area titolare":"Esci")+'</button></div>';
  }else if(tab=="notif"){
   var U=ups();
-  v='<div class="pg"><div class="bar"><button class="back" aria-label="Indietro" onclick="go(\'home\')"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button><h2>'+(isO()?'Notifiche e promemoria':'Notifiche')+'</h2></div>';
+  v='<div class="pg"><div class="bar"><button class="back" aria-label="Indietro" onclick="go(\'home\')"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button><h2>'+'Notifiche'+'</h2></div>';
   if(!isO()&&!C.set.notif)v+='<div class="none">Le notifiche sono disattivate. Puoi attivarle nelle impostazioni.</div>';
   else{
-   if(isO())v+=ownN()+remSec();
+   if(isO())v+=ownN();
    if(!isO()&&C.queue.length){v+='<h3 class="sh">In coda</h3>';C.queue.forEach(function(x){v+='<div class="item"><span>'+e(bn(x.b))+'<small>'+lab(x.d)+' · ti avviso se si libera un posto</small></span><button class="sm rd" onclick="uq('+x.id+')">Esci</button></div>'})}
    if(!isO()&&C.nots.length){v+='<h3 class="sh">Posti liberati</h3>';C.nots.forEach(function(n){v+='<div class="item"><span>'+e(n.m)+'</span><button class="sm" onclick="gt(\''+n.d+'\')">Prenota</button></div>'});v+='<button class="sm" onclick="C.nots=[];sv2();R()">Cancella avvisi</button>'}
    v+='<h3 class="sh">Prossimi appuntamenti</h3>';
@@ -510,7 +510,7 @@ function pend(){return C.clients.filter(function(x){return x.st=="pending"})}
 function myB(){var c=cl1();return isO()?B:B.filter(function(x){return c&&x.u==c.id})}
 function fn(){var c=cl1();return isO()?C.user:(c?c.n+" "+c.c:"")}
 function wn(){var c=cl1();return isO()?C.user:(c?c.n:"")}
-function dotv(){return isO()?(pend().length||C.onots.some(function(n){return n.u})||rdue().some(function(x){return !(C.remDone&&C.remDone[rkey(x)])})):(C.set.notif&&C.nots.some(function(n){return n.u}))}
+function dotv(){return isO()?(pend().length||C.onots.some(function(n){return n.u})):(C.set.notif&&C.nots.some(function(n){return n.u}))}
 function addO(m){C.onots.unshift({id:Date.now()+Math.random(),m:m,u:1,cid:(MODE!="owner"&&ME&&ME.role=="client")?ME.id:null});C.onots=C.onots.slice(0,50)}
 function blk(ds){return C.blocked.filter(function(x){return ds>=x.f&&ds<=x.u})[0]}
 function fdt(t){var d=new Date(t);return d.getDate()+" "+MS[d.getMonth()]+" "+fm(d.getHours()*60+d.getMinutes())}
@@ -623,8 +623,14 @@ function calAdd(){var x=CALW;if(!x)return;var ics=calIcs(x);CALD=1;var b=documen
  try{var a=document.createElement("a");a.href="data:text/calendar;charset=utf-8,"+encodeURIComponent(ics);a.download="appuntamento.ics";document.body.appendChild(a);a.click();setTimeout(function(){a.remove()},800)}catch(e2){window.location.href="data:text/calendar;charset=utf-8,"+encodeURIComponent(ics)}}
 function calClose(){if(!CALD)return;var w=document.getElementById("calw");if(w)w.remove();CALW=null;try{sset("calp","null")}catch(e3){}R()}
 setInterval(function(){try{if(MODE=="owner"||CALW)return;var id=ld("calp");if(id==null)return;var x=B.filter(function(y){return y.id==id&&!y.anon})[0];if(x)calShow(x);else sset("calp","null")}catch(e4){}},2000);
-var BUILD="b2010";
-(function(){try{fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var BUILD="(b[0-9]+)"/);if(m&&m[1]!=BUILD&&location.search.indexOf("v="+m[1])<0)location.replace(location.pathname+"?v="+m[1])}).catch(function(){})}catch(x){}})();
+var BUILD="b2031";
+(function(){function cur(){return parseInt(String(BUILD).slice(1),10)||0}
+ function show(b){if(document.getElementById("upd"))return;var d=document.createElement("div");d.id="upd";d.style.cssText="position:sticky;top:0;z-index:90;display:flex;align-items:center;gap:10px;padding:calc(10px + env(safe-area-inset-top,0px)) 14px 10px;background:#d8b36a;color:#111;font:700 15px Quicksand,Georgia,serif;box-shadow:0 4px 16px rgba(0,0,0,.5)";
+  d.innerHTML='<span style="flex:1">Nuova versione dell’app disponibile</span><button style="border:0;border-radius:6px;padding:9px 14px;background:#111;color:#d8b36a;font:700 14px Quicksand,sans-serif;cursor:pointer">Aggiorna</button>';
+  d.querySelector("button").onclick=function(){this.textContent="Aggiorno…";location.replace(location.pathname+"?v="+b+"&t="+Date.now())};
+  document.body.insertBefore(d,document.body.firstChild)}
+ function chk(){try{fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var BUILD="(b[0-9]+)";/);if(m&&(parseInt(m[1].slice(1),10)||0)>cur())show(m[1])}).catch(function(){})}catch(x){}}
+ chk();setInterval(chk,60000);document.addEventListener("visibilitychange",function(){if(document.visibilityState=="visible")chk()})})();
 idbInit();syncStart();setInterval(function(){try{if(isO())H()}catch(x){}},60000);document.addEventListener("visibilitychange",function(){if(document.visibilityState=="hidden"){try{sset("cfg",JSON.stringify(C));sset("bk2",JSON.stringify(B))}catch(x){}}});addEventListener("pagehide",function(){try{sset("cfg",JSON.stringify(C));sset("bk2",JSON.stringify(B))}catch(x){}});
 if(!LSOK)setTimeout(function(){T("Attenzione: il browser blocca il salvataggio locale. Apri l’app da Safari/Chrome, non da un’anteprima.")},1200);
 </script></body></html>
