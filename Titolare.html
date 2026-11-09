@@ -14,7 +14,7 @@ header{display:flex;align-items:center;gap:10px;padding:14px 14px 10px}
 .ic{width:36px;height:36px;border-radius:50%;border:0;background:#1a1d21;color:#fff;display:grid;place-items:center;cursor:pointer;position:relative;flex:none}
 .ic.n{background:none}.dot{position:absolute;top:2px;right:3px;width:11px;height:11px;border-radius:50%;background:#e5545c}
 .av{width:44px;height:44px;border-radius:50%;background:#fff;display:grid;place-items:center;overflow:hidden;flex:none}
-.av img{width:100%;height:100%;object-fit:contain;filter:none}
+.av img{display:block;height:62px;width:auto;max-width:118px;object-fit:contain;filter:none}
 .days{display:flex;flex-wrap:nowrap;gap:2px;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;padding:14px 12px 8px;scrollbar-width:none}.days::-webkit-scrollbar,.cols::-webkit-scrollbar{display:none}.day{white-space:nowrap}
 .day{flex:0 0 auto;width:54px;padding:8px 0;border-radius:14px;border:0;background:none;color:#a9b4bf;font:inherit;text-align:center;cursor:pointer}
 .day b{display:block;font-size:17px}.day span{font-size:21px;font-weight:600}
@@ -93,7 +93,7 @@ body{background:#0b0b0c !important;font-family:Georgia,"Times New Roman",serif !
 .go{background:#d8b36a !important;color:#111 !important;border-radius:4px !important;letter-spacing:1px;text-transform:uppercase}
 .sl{background:transparent !important;border:1px solid #5a4a30 !important;color:#d8b36a !important;border-radius:4px !important}
 .ic{background:#1b1a18 !important;border:1px solid #3a3022}
-.av{border-radius:6px !important;background:#000 !important;width:58px !important;height:64px !important;border:1px solid #3a3022}
+.av{border-radius:6px !important;background:#000 !important;width:auto !important;min-width:40px;max-width:120px;height:64px !important;border-radius:6px !important;overflow:visible !important;border:1px solid #3a3022}
 .bc.on{border-color:#d8b36a !important;background:#1b1812 !important}
 #gt{background:#0b0b0c !important}
 input,select,textarea{border-radius:4px !important}
@@ -535,7 +535,7 @@ function applyLogo(){var i=document.querySelector(".av img");if(i&&C.logo&&i.src
 function logoPick(inp){var f=inp.files&&inp.files[0];if(!f)return;var r=new FileReader();r.onload=function(){var im=new Image();im.onload=function(){var k=Math.min(1,260/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);var x=c.getContext("2d");x.fillStyle="#000";x.fillRect(0,0,c.width,c.height);x.drawImage(im,0,0,c.width,c.height);C.logo=c.toDataURL("image/jpeg",.85);applyLogo();sv2();T("Logo cambiato")};im.onerror=function(){T("Immagine non valida")};im.src=r.result};r.readAsDataURL(f);inp.value=""}
 (function(){var a=document.querySelector(".av");if(!a)return;var i=document.createElement("input");i.type="file";i.accept="image/*";i.style.display="none";i.onchange=function(){logoPick(i)};document.body.appendChild(i);a.style.cursor="pointer";a.onclick=function(){i.click()}})();
 applyLogo();setInterval(applyLogo,1500);
-var BUILD="b1255";
+var BUILD="b1300";
 (function(){try{fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var BUILD="(b[0-9]+)"/);if(m&&m[1]!=BUILD&&location.search.indexOf("v="+m[1])<0)location.replace(location.pathname+"?v="+m[1])}).catch(function(){})}catch(x){}})();
 idbInit();syncStart();setInterval(function(){try{if(isO())H()}catch(x){}},60000);document.addEventListener("visibilitychange",function(){if(document.visibilityState=="hidden"){try{sset("cfg",JSON.stringify(C));sset("bk2",JSON.stringify(B))}catch(x){}}});addEventListener("pagehide",function(){try{sset("cfg",JSON.stringify(C));sset("bk2",JSON.stringify(B))}catch(x){}});
 if(!LSOK)setTimeout(function(){T("Attenzione: il browser blocca il salvataggio locale. Apri l’app da Safari/Chrome, non da un’anteprima.")},1200);
