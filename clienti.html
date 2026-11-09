@@ -78,6 +78,23 @@ a.sm{text-decoration:none;display:inline-block}.day.cl:not(.on){opacity:.4}
 .gl{background:none;border:0;color:#7cc4f0;font:700 16px Quicksand,sans-serif;cursor:pointer;padding:12px}.ge,.err{color:#ff8b92;font-weight:600;margin:10px 0 0;font-size:15px}
 .rw.cl{flex-direction:column;align-items:stretch}.sm.ok{background:#12351f;color:#7be3a0}
 .bkd{width:100%;border:1px solid #6b2e33;border-radius:18px;background:#3a1d20;color:#ffb3b8;padding:8px 6px;font:600 14px/1.2 Quicksand,sans-serif;text-align:center;word-break:break-word;cursor:pointer}.bkd b{display:block;font-size:17px;color:#fff}.sin{width:100%;background:#0f0f0f;border:1px solid #2a2a2a;color:#fff;border-radius:12px;padding:11px 12px;font:600 16px Quicksand,sans-serif;margin-bottom:8px}.bkd{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}.sl.tg{outline:3px solid #ebb941}.gh{box-shadow:0 8px 24px rgba(0,0,0,.6)}#ac{position:fixed;inset:0;z-index:55;display:none;background:rgba(0,0,0,.6);align-items:flex-end;justify-content:center}.acs{width:100%;max-width:480px;background:#171717;border-radius:30px 30px 0 0;padding:22px 16px calc(18px + env(safe-area-inset-bottom,0px));text-align:center}.acs h3{margin:0 0 4px;font-size:22px}.acs p{color:#a9b4bf;margin:0 0 16px;font-weight:500}.acs .go{margin-bottom:8px}.acs .go.dn{background:#2a1416;color:#ff8b92}.dg{flex:none;display:flex;flex-direction:column;gap:8px}.dgh{border-radius:14px;padding:6px 0;text-align:center;font-weight:700;background:linear-gradient(#7cc4f0,#3b8fd6);color:#0a1a2a}.dgc{display:flex;gap:9px;align-items:flex-start}.dg+.dg{margin-left:10px;padding-left:10px;border-left:1px solid rgba(255,255,255,.14)}
+/*TEMA ORO*/
+:root{--bl:#d8b36a;--bl2:#b8914a;--ye:#d8b36a;--pill:rgba(30,26,20,.9)}
+body{background:#0b0b0c !important;font-family:Georgia,"Times New Roman",serif !important}
+.ttl b,.pg h2,h3,.dt,.nm{font-family:Georgia,serif !important;letter-spacing:.5px}
+.card,.item,.gf,.sheet,.bc{background:#151413 !important;border:1px solid #3a3022 !important;border-radius:6px !important}
+.dt{background:none !important;color:#d8b36a !important;border:0 !important;border-bottom:1px solid #3a3022 !important;border-radius:0 !important;text-transform:uppercase;letter-spacing:2px;font-size:14px}
+.day{border-radius:0 !important;color:#8d8576 !important}
+.day.on{background:none !important;color:#d8b36a !important;border-bottom:2px solid #d8b36a !important;box-shadow:none !important}
+.nav{background:#0b0b0c !important;border:0 !important;border-top:1px solid #3a3022 !important;border-radius:0 !important}
+.nb.on{background:none !important;color:#d8b36a !important;border-bottom:2px solid #d8b36a;border-radius:0 !important;padding:10px 14px !important}
+.go{background:#d8b36a !important;color:#111 !important;border-radius:4px !important;letter-spacing:1px;text-transform:uppercase}
+.sl{background:transparent !important;border:1px solid #5a4a30 !important;color:#d8b36a !important;border-radius:4px !important}
+.ic{background:#1b1a18 !important;border:1px solid #3a3022}
+.av{border-radius:4px !important}
+.bc.on{border-color:#d8b36a !important;background:#1b1812 !important}
+#gt{background:#0b0b0c !important}
+input,select,textarea{border-radius:4px !important}
 </style></head><body>
 <header id="hd"></header>
 <div id="v"></div>
@@ -446,7 +463,7 @@ document.addEventListener("pointercancel",function(){if(DR&&!DR.on){dEnd();DR=nu
 document.addEventListener("touchmove",function(ev){if(DR&&DR.on)ev.preventDefault()},{passive:false});
 document.addEventListener("contextmenu",function(ev){if(ev.target.closest&&ev.target.closest(".bkd"))ev.preventDefault()});
 sv2();R();
-var BUILD="b0906";
+var BUILD="b1210";
 (function(){try{fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var BUILD="(b[0-9]+)"/);if(m&&m[1]!=BUILD&&location.search.indexOf("v="+m[1])<0)location.replace(location.pathname+"?v="+m[1])}).catch(function(){})}catch(x){}})();
 idbInit();syncStart();document.addEventListener("visibilitychange",function(){if(document.visibilityState=="hidden"){try{sset("cfg",JSON.stringify(C));sset("bk2",JSON.stringify(B))}catch(x){}}});addEventListener("pagehide",function(){try{sset("cfg",JSON.stringify(C));sset("bk2",JSON.stringify(B))}catch(x){}});
 if(!LSOK)setTimeout(function(){T("Attenzione: il browser blocca il salvataggio locale. Apri l’app da Safari/Chrome, non da un’anteprima.")},1200);
