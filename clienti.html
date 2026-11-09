@@ -159,6 +159,10 @@ function fm(m){return("0"+Math.floor(m/60)).slice(-2)+":"+("0"+m%60).slice(-2)}
 function bn(id){var b=C.barbers.filter(function(x){return x.id==id})[0];return b?b.name:"—"}
 function lab(s){var d=pd(s);return DS[d.getDay()]+" "+d.getDate()+" "+MS[d.getMonth()]}
 function vdn(){var v=+C.set.viewDays;return v>0?v:30}
+function bph(b){return b.img?'<img class="ph" style="object-fit:cover;display:block" src="'+e(b.img)+'" alt="">':'<div class="ph">'+e((b.name||"?").charAt(0))+'</div>'}
+function bcol(ds,b){var bid=b.id,dd=pd(ds),l=fr(ds,bid),oo=C.hours[dd.getDay()].o,h='<div class="col" data-d="'+ds+'"><div class="card"><div class="dt">'+DS[dd.getDay()]+' '+dd.getDate()+'</div><div class="nm">'+e(b.name)+'</div>'+bph(b)+(oo?'':'<div class="lp">Chiuso</div>')+(isO()?'':qb(bid,ds))+'</div>';
+ if(!isO()&&oo&&!l.length&&!full(ds,bid))h+='<div class="none">Nessun posto</div>';
+ gr(ds,bid).forEach(function(t){if(!isO()&&(fx(ds,bid,t)||taken(ds,bid,t)))return;var w=isO()?who(ds,bid,t):null;if(w){h+='<div class="bkd" data-id="'+w.id+'"'+(w.fx?' data-fx="1"':'')+'><b>'+t+'</b>'+e(w.n)+(w.fx?' · fisso':'')+'</div>';return}var on=pick&&pick.d==ds&&pick.b==bid&&pick.t==t;h+='<button class="sl '+(on?"on":"")+'" data-d="'+ds+'" data-t="'+t+'" onclick="pick={b:'+bid+',d:\''+ds+'\',t:\''+t+'\'};R()">'+t+'</button>'});return h+'</div>'}
 function days(){D=[];var n=new Date();for(var i=0;i<(isO()?150:vdn())&&D.length<(isO()?30:400);i++){var d=new Date(n.getFullYear(),n.getMonth(),n.getDate()+i);if(C.hours[d.getDay()].o&&!blk(iso(d)))D.push(d)}if(di>=D.length)di=0}
 function fx(d,b,t){var w=pd(d).getDay();return C.fixed.some(function(x){return x.b==b&&x.t==t&&x.w.indexOf(w)>=0&&d>=x.f&&(!x.u||d<=x.u)&&fxr(x,d)})}
 function taken(d,b,t,ex){return fx(d,b,t)||B.some(function(x){return x.d==d&&x.b==b&&x.t==t&&x.id!=ex})}
@@ -185,6 +189,8 @@ function H(){document.getElementById("hd").innerHTML='<div class="ttl"><b>'+e(C.
 function R(){if(gate())return;if(!isO()&&/^(shop|fixed|fform|clients|cedit|pform)$/.test(tab))tab="home";days();if(si>=C.services.length)si=0;var v="",s="";
  if(tab=="home"){
   if(!D.length)v='<div class="none">Nessun giorno disponibile al momento.</div>';
+  else if(C.barbers.length>1){if(goD){for(var k=0;k<D.length;k++)if(iso(D[k])==goD){di=k;break}goD=null}
+   var dsx=iso(D[di]);v='<div class="days">'+D.map(function(d,i){return'<button class="day '+(i==di?"on":"")+'" onclick="di='+i+';pick=null;R()"><b>'+"DLMMGVS".charAt(d.getDay())+'</b><span>'+d.getDate()+'</span></button>'}).join("")+'</div><div class="cols">'+C.barbers.map(function(b){return bcol(dsx,b)}).join("")+'</div>'}
   else{if(!C.barbers.some(function(x){return x.id==sbid}))sbid=(C.barbers[0]||{}).id;
    v='<div class="bs">';C.barbers.forEach(function(b){v+='<button class="bc '+(b.id==sbid?"on":"")+'" onclick="sbid='+b.id+';pick=null;R()"><span class="ph">'+e(b.name[0]||"?")+'</span>'+e(b.name)+'</button>'});v+='</div><div class="cols">';
    D.forEach(function(d){var ds=iso(d),l=fr(ds,sbid),oo=C.hours[d.getDay()].o;
