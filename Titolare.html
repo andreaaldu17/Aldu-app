@@ -267,7 +267,7 @@ function lab(s){var d=pd(s);return DS[d.getDay()]+" "+d.getDate()+" "+MS[d.getMo
 function vdn(){var v=+C.set.viewDays;return v>0?v:30}
 var OWD=30;
 function dj(){var MN=["gennaio","febbraio","marzo","aprile","maggio","giugno","luglio","agosto","settembre","ottobre","novembre","dicembre"],n=new Date(),o='<option value="">Scegli il mese…</option>';for(var i=0;i<14;i++){var d=new Date(n.getFullYear(),n.getMonth()+i,1),v=i?iso(d):iso(n);o+='<option value="'+v+'">'+MN[d.getMonth()]+' '+d.getFullYear()+'</option>'}
- return'<div class="rw" style="margin:0 0 8px;padding:0 12px 0 18px;gap:8px;align-items:center"><span class="mu">Vai al mese</span><select class="sin" style="width:auto;margin:0;min-width:170px" onchange="jd(this.value)">'+o+'</select><button class="sm" aria-label="Aggiorna" style="padding:9px 12px;font-size:18px;line-height:1" onclick="location.replace(location.pathname+\'?v=\'+Date.now())">&#8635;</button>'+(OWD>30?'<button class="sm" onclick="OWD=30;goD=iso(D[0]);R()">Solo 30 giorni</button>':'')+'</div>'}
+ return'<div class="rw" style="margin:0 0 8px;padding:0 12px 0 18px;gap:8px;align-items:center"><span class="mu">Vai al mese</span><select class="sin" style="width:auto;margin:0;min-width:170px" onchange="jd(this.value)">'+o+'</select><button class="sm" aria-label="Aggiorna" style="padding:9px 12px;font-size:18px;line-height:1" onclick="location.replace(location.pathname+\'?v=\'+Date.now())">&#8635;</button><button class="sm" style="padding:9px 12px" onclick="shOpen()">Condividi orari</button>'+(OWD>30?'<button class="sm" onclick="OWD=30;goD=iso(D[0]);R()">Solo 30 giorni</button>':'')+'</div>'}
 function jd(ds){if(!ds)return;var n=new Date(),cnt=0,found=null;for(var i=0;i<400;i++){var d=new Date(n.getFullYear(),n.getMonth(),n.getDate()+i),k=iso(d);if(anyO(d.getDay())&&!blk(k)){cnt++;if(k>=ds){found=k;break}}}if(!found){T("Nessun giorno disponibile da quella data");return}OWD=Math.max(OWD,cnt+3);goD=found;R()}
 function bph(b,z){var sz=z?'width:'+z+'px;height:'+z+'px;font-size:'+Math.round(z/2.6)+'px;':'';return b.img?'<img class="ph" data-bid="'+b.id+'" style="'+sz+'object-fit:cover;display:block" src="'+e(b.img)+'" alt="">':'<div class="ph" data-bid="'+b.id+'"'+(z?' style="'+sz+'"':'')+'>'+e((b.name||"?").charAt(0))+'</div>'}
 function bcol(ds,b){var bid=b.id,dd=pd(ds),l=fr(ds,bid),oo=bh(bid,dd.getDay()).o,h='<div class="col" data-d="'+ds+'"><div class="card"><div class="nm">'+e(b.name)+'</div>'+bph(b,48)+(oo?'':'<div class="lp">Chiuso</div>')+(isO()?'':qb(bid,ds))+'</div>';
@@ -628,6 +628,38 @@ function applyTheme(){try{document.body.setAttribute("data-th",C.theme||"bianco"
 function THS(){if(!isO())return"";var h='<h3 class="sh">Aspetto</h3><div class="thg">';Object.keys(THEMES).forEach(function(k){var t=THEMES[k],p=t.p.split(";");h+='<button class="thb'+((C.theme||"bianco")==k?" on":"")+'" onclick="setTh(\''+k+'\')"><i style="background:linear-gradient(135deg,'+p[0]+' 50%,'+p[1]+' 50%)"></i>'+e(t.n)+'</button>'});return h+'</div><p class="mu" style="margin:6px 8px 4px">Lo sfondo scelto vale anche per l’app dei clienti.</p>'}
 function setTh(k){if(!THEMES[k])return;C.theme=k;applyTheme();sv2();R()}
 applyTheme();
+
+var SHB=null,SHD=null,SHBL=null;
+function shClose(){var o=document.getElementById("shw");if(o)o.parentNode.removeChild(o)}
+function shOpen(){if(!isO()||!C.barbers.length)return;SHB=sbid||C.barbers[0].id;SHD=iso(D[di]);shUi()}
+function shUi(){var o=document.getElementById("shw");if(!o){o=document.createElement("div");o.id="shw";o.style.cssText="position:fixed;inset:0;z-index:9998;background:rgba(0,0,0,.85);overflow:auto;-webkit-overflow-scrolling:touch;padding:16px";document.body.appendChild(o)}
+ var DN=["domenica","lunedì","martedì","mercoledì","giovedì","venerdì","sabato"],h='<div style="max-width:440px;margin:0 auto"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><b style="color:#fff;font-size:20px">Condividi orari liberi</b><button class="sm" onclick="shClose()">Chiudi</button></div><div class="rw" style="gap:8px;margin-bottom:12px"><select class="sin" style="margin:0" onchange="SHB=+this.value;shUi()">';
+ C.barbers.forEach(function(b){h+='<option value="'+b.id+'"'+(b.id==SHB?" selected":"")+'>'+e(b.name)+'</option>'});
+ h+='</select><select class="sin" style="margin:0" onchange="SHD=this.value;shUi()">';
+ var n=new Date();for(var i=0;i<21;i++){var d=new Date(n.getFullYear(),n.getMonth(),n.getDate()+i),k=iso(d);h+='<option value="'+k+'"'+(k==SHD?" selected":"")+'>'+DN[d.getDay()]+" "+d.getDate()+"/"+(d.getMonth()+1)+'</option>'}
+ h+='</select></div><div id="shm" style="color:#fff;text-align:center;padding:30px 0">Creo l’immagine…</div><img id="shi" style="width:100%;border-radius:12px;display:none" alt=""><div class="rw" style="gap:8px;margin-top:12px"><button class="sm" style="flex:1;padding:14px" onclick="shSend()">Condividi</button><button class="sm" style="flex:1;padding:14px" onclick="shSave()">Salva immagine</button></div><div style="color:#a9b4bf;font-size:13px;text-align:center;margin-top:8px">Scegli Instagram dal menu di condivisione, oppure tieni premuta l’immagine per salvarla.</div></div>';
+ o.innerHTML=h;shRender()}
+function shRender(){var b=C.barbers.filter(function(x){return x.id==SHB})[0],fl=fr(SHD,SHB),step=+C.step||30,W=1080,H=1350,c=document.createElement("canvas");c.width=W;c.height=H;var x=c.getContext("2d");
+ var DN=["Domenica","Lunedì","Martedì","Mercoledì","Giovedì","Venerdì","Sabato"],MN=["gennaio","febbraio","marzo","aprile","maggio","giugno","luglio","agosto","settembre","ottobre","novembre","dicembre"],d=pd(SHD);
+ function fin(lg){x.fillStyle="#0b0b0c";x.fillRect(0,0,W,H);x.strokeStyle="rgba(255,255,255,.25)";x.lineWidth=3;x.strokeRect(36,36,W-72,H-72);
+  var y=70;if(lg){var r=Math.min(200/lg.height,300/lg.width),w=lg.width*r,hh=lg.height*r;x.drawImage(lg,(W-w)/2,y,w,hh);y+=hh+30}else y+=60;
+  x.textAlign="center";x.fillStyle="#9aa3ad";x.font="600 30px Helvetica,Arial,sans-serif";x.fillText("D I S P O N I B I L I T À",W/2,y+30);
+  x.fillStyle="#fff";x.font="700 64px Georgia,serif";x.fillText(DN[d.getDay()]+" "+d.getDate()+" "+MN[d.getMonth()],W/2,y+110);
+  x.font="600 42px Helvetica,Arial,sans-serif";x.fillStyle="#d9d9d9";x.fillText(b?b.name:"",W/2,y+170);
+  x.fillStyle="rgba(255,255,255,.25)";x.fillRect(140,y+205,W-280,2);
+  var top=y+245,bot=H-170,av=bot-top,mx=24,more=0;if(fl.length>mx){more=fl.length-mx;fl=fl.slice(0,mx)}
+  if(!fl.length){x.fillStyle="#fff";x.font="600 48px Helvetica,Arial,sans-serif";x.fillText("Nessun orario libero",W/2,top+120)}
+  else{var cols=fl.length>12?3:fl.length>4?2:1;if(fl.length<=6&&fl.length>4)cols=2;cols=fl.length>8?3:cols;var rows=Math.ceil(fl.length/cols),gap=22,cw=Math.min(300,(W-200-gap*(cols-1))/cols),ch=Math.min(100,(av-gap*(rows-1))/rows),fs=Math.round(Math.min(40,ch*.42)),tw=cw*cols+gap*(cols-1),x0=(W-tw)/2;
+   fl.forEach(function(t,i){var cx=x0+(i%cols)*(cw+gap),cy=top+Math.floor(i/cols)*(ch+gap),m=mn(t),e2=fm(m+step);x.fillStyle="#fff";x.beginPath();if(x.roundRect)x.roundRect(cx,cy,cw,ch,ch/2);else x.rect(cx,cy,cw,ch);x.fill();x.fillStyle="#111";x.font="700 "+fs+"px Helvetica,Arial,sans-serif";x.textBaseline="middle";x.fillText(t+" – "+e2,cx+cw/2,cy+ch/2+2);x.textBaseline="alphabetic"});
+   if(more){x.fillStyle="#9aa3ad";x.font="600 32px Helvetica,Arial,sans-serif";x.fillText("+ altri "+more+" orari",W/2,bot+30)}}
+  x.fillStyle="#fff";x.font="700 44px Georgia,serif";x.fillText("Prenota su "+(C.shop||"Barbershop Da Aldu"),W/2,H-95);
+  var m=document.getElementById("shm"),im=document.getElementById("shi");if(!im)return;
+  try{c.toBlob(function(bl){SHBL=bl;if(bl){im.src=URL.createObjectURL(bl);im.style.display="block";if(m)m.style.display="none"}},"image/png")}catch(z){if(m)m.textContent="Impossibile creare l’immagine"}}
+ var src=C.logo||(document.querySelector(".av img")||{}).src;if(!src)return fin(null);var g=new Image();g.onload=function(){fin(g)};g.onerror=function(){fin(null)};g.src=src}
+function shFile(){return SHBL?new File([SHBL],"orari-liberi.png",{type:"image/png"}):null}
+function shSend(){var f=shFile();if(!f){T("Immagine non pronta");return}
+ if(navigator.canShare&&navigator.canShare({files:[f]})){navigator.share({files:[f]}).catch(function(){})}else shSave()}
+function shSave(){var f=shFile();if(!f){T("Immagine non pronta");return}var a=document.createElement("a");a.href=URL.createObjectURL(f);a.download="orari-liberi.png";document.body.appendChild(a);a.click();setTimeout(function(){document.body.removeChild(a)},500);T("Se non si scarica, tieni premuta l’immagine e salvala")}
 var CALW=null,CALD=0;
 function calIcs(x){var p=x.d.replace(/-/g,""),a=mn(x.t),sv=(C.services||[]).filter(function(s){return s.n==x.s})[0],du=(sv&&+sv.m)||+C.step||30,z=function(m){return p+"T"+fm(m).replace(":","")+"00"},
  esc=function(s){return String(s).replace(/[\;,]/g,function(c){return"\\"+c}).replace(/\n/g,"\\n")},n=new Date(),st=n.getUTCFullYear()+("0"+(n.getUTCMonth()+1)).slice(-2)+("0"+n.getUTCDate()).slice(-2)+"T"+("0"+n.getUTCHours()).slice(-2)+("0"+n.getUTCMinutes()).slice(-2)+"00Z";
@@ -641,7 +673,7 @@ function calAdd(){var x=CALW;if(!x)return;var ics=calIcs(x);CALD=1;var b=documen
  try{var a=document.createElement("a");a.href="data:text/calendar;charset=utf-8,"+encodeURIComponent(ics);a.download="appuntamento.ics";document.body.appendChild(a);a.click();setTimeout(function(){a.remove()},800)}catch(e2){window.location.href="data:text/calendar;charset=utf-8,"+encodeURIComponent(ics)}}
 function calClose(){if(!CALD)return;var w=document.getElementById("calw");if(w)w.remove();CALW=null;try{sset("calp","null")}catch(e3){}R()}
 setInterval(function(){try{if(MODE=="owner"||CALW)return;var id=ld("calp");if(id==null)return;var x=B.filter(function(y){return y.id==id&&!y.anon})[0];if(x)calShow(x);else sset("calp","null")}catch(e4){}},2000);
-var BUILD="b2150";
+var BUILD="b2160";
 (function(){function cur(){return parseInt(String(BUILD).slice(1),10)||0}
  function show(b){if(document.getElementById("upd"))return;var d=document.createElement("div");d.id="upd";d.style.cssText="position:fixed;inset:0;z-index:2000;overflow:auto;display:flex;align-items:center;justify-content:center;padding:28px 24px;background:#0b0b0c;color:#fff;text-align:center;font:600 16px/1.4 Georgia,serif";
   d.innerHTML='<div style="max-width:420px"><h1 style="margin:0 0 12px;font-size:26px">Aggiornamento necessario</h1><p style="color:#a9b4bf;margin:0 0 26px">È disponibile una nuova versione dell’app. Per continuare a prenotare e usare l’app devi aggiornarla.</p><button style="width:100%;border:0;border-radius:6px;padding:16px;background:#ffffff;color:#111;font:700 17px Quicksand,sans-serif;letter-spacing:1px;text-transform:uppercase;cursor:pointer">Aggiorna ora</button><p id="updm" style="color:#a9b4bf;font-size:14px;min-height:20px;margin-top:14px"></p></div>';
