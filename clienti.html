@@ -159,7 +159,7 @@ function fm(m){return("0"+Math.floor(m/60)).slice(-2)+":"+("0"+m%60).slice(-2)}
 function bn(id){var b=C.barbers.filter(function(x){return x.id==id})[0];return b?b.name:"—"}
 function lab(s){var d=pd(s);return DS[d.getDay()]+" "+d.getDate()+" "+MS[d.getMonth()]}
 function vdn(){var v=+C.set.viewDays;return v>0?v:30}
-function days(){D=[];var n=new Date();for(var i=0;i<(isO()?150:vdn())&&D.length<(isO()?30:200);i++){var d=new Date(n.getFullYear(),n.getMonth(),n.getDate()+i);if(C.hours[d.getDay()].o&&!blk(iso(d)))D.push(d)}if(di>=D.length)di=0}
+function days(){D=[];var n=new Date();for(var i=0;i<(isO()?150:vdn())&&D.length<(isO()?30:400);i++){var d=new Date(n.getFullYear(),n.getMonth(),n.getDate()+i);if(C.hours[d.getDay()].o&&!blk(iso(d)))D.push(d)}if(di>=D.length)di=0}
 function fx(d,b,t){var w=pd(d).getDay();return C.fixed.some(function(x){return x.b==b&&x.t==t&&x.w.indexOf(w)>=0&&d>=x.f&&(!x.u||d<=x.u)&&fxr(x,d)})}
 function taken(d,b,t,ex){return fx(d,b,t)||B.some(function(x){return x.d==d&&x.b==b&&x.t==t&&x.id!=ex})}
 function gr(ds,b){var h=C.hours[pd(ds).getDay()],o=[],n=new Date(),td=iso(n)==ds,nm=n.getHours()*60+n.getMinutes();if(!h.o||blk(ds))return o;
