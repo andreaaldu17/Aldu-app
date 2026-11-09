@@ -161,13 +161,15 @@ function bn(id){var b=C.barbers.filter(function(x){return x.id==id})[0];return b
 function lab(s){var d=pd(s);return DS[d.getDay()]+" "+d.getDate()+" "+MS[d.getMonth()]}
 function vdn(){var v=+C.set.viewDays;return v>0?v:30}
 function bph(b,z){var sz=z?'width:'+z+'px;height:'+z+'px;font-size:'+Math.round(z/2.6)+'px;':'';return b.img?'<img class="ph" style="'+sz+'object-fit:cover;display:block" src="'+e(b.img)+'" alt="">':'<div class="ph"'+(z?' style="'+sz+'"':'')+'>'+e((b.name||"?").charAt(0))+'</div>'}
-function bcol(ds,b){var bid=b.id,dd=pd(ds),l=fr(ds,bid),oo=C.hours[dd.getDay()].o,h='<div class="col" data-d="'+ds+'"><div class="card"><div class="nm">'+e(b.name)+'</div>'+bph(b,48)+(oo?'':'<div class="lp">Chiuso</div>')+(isO()?'':qb(bid,ds))+'</div>';
+function bcol(ds,b){var bid=b.id,dd=pd(ds),l=fr(ds,bid),oo=bh(bid,dd.getDay()).o,h='<div class="col" data-d="'+ds+'"><div class="card"><div class="nm">'+e(b.name)+'</div>'+bph(b,48)+(oo?'':'<div class="lp">Chiuso</div>')+(isO()?'':qb(bid,ds))+'</div>';
  if(!isO()&&oo&&!l.length&&!full(ds,bid))h+='<div class="none">Nessun posto</div>';
  gr(ds,bid).forEach(function(t){if(!isO()&&(fx(ds,bid,t)||taken(ds,bid,t)))return;var w=isO()?who(ds,bid,t):null;if(w){h+='<div class="bkd" data-id="'+w.id+'"'+(w.fx?' data-fx="1"':'')+'><b>'+t+'</b>'+e(w.n)+(w.fx?' · fisso':'')+'</div>';return}var on=pick&&pick.d==ds&&pick.b==bid&&pick.t==t;h+='<button class="sl '+(on?"on":"")+'" data-d="'+ds+'" data-t="'+t+'" onclick="pick={b:'+bid+',d:\''+ds+'\',t:\''+t+'\'};R()">'+t+'</button>'});return h+'</div>'}
-function days(){D=[];var n=new Date();for(var i=0;i<(isO()?150:vdn())&&D.length<(isO()?30:400);i++){var d=new Date(n.getFullYear(),n.getMonth(),n.getDate()+i);if(C.hours[d.getDay()].o&&!blk(iso(d)))D.push(d)}if(di>=D.length)di=0}
+function bh(b,wd){var x=null;C.barbers.forEach(function(y){if(y.id==b)x=y});return(x&&x.hrs&&x.hrs[wd])?x.hrs[wd]:C.hours[wd]}
+function anyO(wd){if(!C.barbers.length)return !!C.hours[wd].o;return C.barbers.some(function(y){return bh(y.id,wd).o})}
+function days(){D=[];var n=new Date();for(var i=0;i<(isO()?150:vdn())&&D.length<(isO()?30:400);i++){var d=new Date(n.getFullYear(),n.getMonth(),n.getDate()+i);if(anyO(d.getDay())&&!blk(iso(d)))D.push(d)}if(di>=D.length)di=0}
 function fx(d,b,t){var w=pd(d).getDay();return C.fixed.some(function(x){return x.b==b&&x.t==t&&x.w.indexOf(w)>=0&&d>=x.f&&(!x.u||d<=x.u)&&fxr(x,d)})}
 function taken(d,b,t,ex){return fx(d,b,t)||B.some(function(x){return x.d==d&&x.b==b&&x.t==t&&x.id!=ex})}
-function gr(ds,b){var h=C.hours[pd(ds).getDay()],o=[],n=new Date(),td=iso(n)==ds,nm=n.getHours()*60+n.getMinutes();if(!h.o||blk(ds))return o;
+function gr(ds,b){var h=bh(b,pd(ds).getDay()),o=[],n=new Date(),td=iso(n)==ds,nm=n.getHours()*60+n.getMinutes();if(!h.o||blk(ds))return o;
  for(var m=mn(h.s);m<mn(h.e);m+=+C.step){if(mn(h.bs)<mn(h.be)&&m>=mn(h.bs)&&m<mn(h.be))continue;if(td&&m<nm)continue;o.push(fm(m))}return o}
 function fr(ds,b){return gr(ds,b).filter(function(t){return!taken(ds,b,t)})}
 function full(ds,b){var g=gr(ds,b);return g.length>0&&g.every(function(t){return taken(ds,b,t)})}
@@ -194,7 +196,7 @@ function R(){if(gate())return;if(!isO()&&/^(shop|fixed|fform|clients|cedit|pform
    var dsx=iso(D[di]);v='<div class="days">'+D.map(function(d,i){return'<button class="day '+(i==di?"on":"")+'" onclick="di='+i+';goD=\''+iso(d)+'\';pick=null;R()"><b>'+"DLMMGVS".charAt(d.getDay())+'</b><span>'+d.getDate()+'</span></button>'}).join("")+'</div><div class="cols">'+D.map(function(d){var ds=iso(d);return'<div class="dg" data-d="'+ds+'"><div class="dt dgh">'+lab(ds)+'</div><div class="dgc">'+C.barbers.map(function(b){return bcol(ds,b)}).join("")+'</div></div>'}).join("")+'</div>'}
   else{if(!C.barbers.some(function(x){return x.id==sbid}))sbid=(C.barbers[0]||{}).id;
    v='<div class="bs">';C.barbers.forEach(function(b){v+='<button class="bc '+(b.id==sbid?"on":"")+'" onclick="sbid='+b.id+';pick=null;R()"><span class="ph">'+e(b.name[0]||"?")+'</span>'+e(b.name)+'</button>'});v+='</div><div class="cols">';
-   D.forEach(function(d){var ds=iso(d),l=fr(ds,sbid),oo=C.hours[d.getDay()].o;
+   D.forEach(function(d){var ds=iso(d),l=fr(ds,sbid),oo=bh(sbid,d.getDay()).o;
     v+='<div class="col" data-d="'+ds+'"><div class="card"><div class="dt">'+lab(ds)+'</div>'+(oo?'':'<div class="lp">Chiuso</div>')+(isO()?'':qb(sbid,ds))+'</div>';
     if(!isO()&&oo&&!l.length&&!full(ds,sbid))v+='<div class="none">Nessun posto</div>';
     (gr(ds,sbid)).forEach(function(t){if(!isO()&&(fx(ds,sbid,t)||taken(ds,sbid,t)))return;var w=isO()?who(ds,sbid,t):null;if(w){v+='<div class="bkd" data-id="'+w.id+'"'+(w.fx?' data-fx="1"':'')+'><b>'+t+'</b>'+e(w.n)+(w.fx?' · fisso':'')+'</div>';return}var on=pick&&pick.d==ds&&pick.b==sbid&&pick.t==t;v+='<button class="sl '+(on?"on":"")+'" data-d="'+ds+'" data-t="'+t+'" onclick="pick={b:'+sbid+',d:\''+ds+'\',t:\''+t+'\'};R()">'+t+'</button>'});v+='</div>'});v+='</div>'}
