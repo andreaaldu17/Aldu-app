@@ -138,7 +138,7 @@ function skey(id){return String(id).replace(/[.$#\[\]\/]/g,"_")}
 function sget(k){return k=="cl"?C.clients:k=="bk"?B:k=="q"?C.queue:k=="nt"?C.nots:k=="on"?C.onots:k=="fx"?C.fixed:C.products}
 function sput(k,a){if(k=="cl")C.clients=a;else if(k=="bk")B=a;else if(k=="q")C.queue=a;else if(k=="nt")C.nots=a;else if(k=="on")C.onots=a;else if(k=="fx")C.fixed=a;else C.products=a}
 function smap(a){var m={};(a||[]).forEach(function(x){if(x&&x.id!=null)m[skey(x.id)]=JSON.stringify(x)});return m}
-function cfgObj(){return{theme:C.theme||"bianco",logo:C.logo||null,shop:C.shop,promo:C.promo,step:C.step,nid:C.nid,hours:C.hours,barbers:C.barbers,services:C.services,blocked:C.blocked||[],vd:+C.set.viewDays||30}}
+function cfgObj(){return{theme:C.theme||"bianco",logo:C.logo||null,shop:C.shop,promo:C.promo,step:C.step,nid:C.nid,hours:C.hours,barbers:C.barbers,services:C.services,blocked:C.blocked||[],vd:+C.set.viewDays||30,cx:+C.set.cxm||0}}
 function lsave(){sset("cfg",JSON.stringify(C));sset("bk2",JSON.stringify(B))}
 function syncPush(){SY.ver++;SY.pend=true;clearTimeout(SY.t);if(SY.init)SY.t=setTimeout(doPush,400)}
 function nj(o){if(o===null||typeof o!="object")return JSON.stringify(o);if(Array.isArray(o))return"["+o.map(nj).join(",")+"]";return"{"+Object.keys(o).filter(function(k){return o[k]!==undefined}).sort().map(function(k){return JSON.stringify(k)+":"+nj(o[k])}).join(",")+"}"}
@@ -221,7 +221,7 @@ function applyPull(z){var ow=MODE=="owner",d=z[0]||{},P=z[z.length-1],U=ow?z[1]:
    SY.snap=snap;if(ow)chK=ensK();
   }
   var c=d.cfg||(M&&M.cfg);
-  if(c){if(c.logo)C.logo=c.logo;if(c.theme)C.theme=c.theme;try{applyTheme()}catch(x){}try{applyLogo()}catch(x){}if(c.shop!=null)C.shop=c.shop;if(c.promo!=null)C.promo=c.promo;if(c.step!=null)C.step=c.step;if(c.nid!=null)C.nid=c.nid;if(c.hours)C.hours=c.hours;C.barbers=c.barbers||[];C.services=c.services||[];C.blocked=c.blocked||[];if(c.vd)C.set.viewDays=c.vd;try{fixSv()}catch(x){}SY.cfs=JSON.stringify(cfgObj())}else SY.cfs="";
+  if(c){if(c.logo)C.logo=c.logo;if(c.theme)C.theme=c.theme;try{applyTheme()}catch(x){}try{applyLogo()}catch(x){}if(c.shop!=null)C.shop=c.shop;if(c.promo!=null)C.promo=c.promo;if(c.step!=null)C.step=c.step;if(c.nid!=null)C.nid=c.nid;if(c.hours)C.hours=c.hours;C.barbers=c.barbers||[];C.services=c.services||[];C.blocked=c.blocked||[];if(c.vd)C.set.viewDays=c.vd;C.set.cxm=+c.cx||0;try{fixSv()}catch(x){}SY.cfs=JSON.stringify(cfgObj())}else SY.cfs="";
   if(hasP){var pa=Object.keys(P||{}).map(function(i){return P[i]}).filter(function(x){return x&&typeof x=="object"}).sort(function(a,b){return ordn(a)-ordn(b)});SY.psn=smap(pa);SY.pv=d.pv||0;C.products=pa}
   else if(first)SY.psn={};
   lsave();
@@ -406,7 +406,8 @@ function fxl(){if(isO())return"";var me0=fn().trim().toLowerCase(),fo=[],nw=new 
 var DXc=null;
 function dfx(id,ds){var x=C.fixed.filter(function(y){return y.id==id})[0];if(!x||isO()||x.c.trim().toLowerCase()!=fn().trim().toLowerCase())return;var k=id+"|"+ds;if(DXc!=k){DXc=k;T("Tocca di nuovo per disdire");R();clearTimeout(dfx.h);dfx.h=setTimeout(function(){DXc=null;R()},4000);return}DXc=null;x.ex=x.ex||[];if(x.ex.indexOf(ds)<0)x.ex.push(ds);addO("Disdetta appuntamento fisso: "+x.c+" · "+lab(ds)+" alle "+x.t+" con "+bn(x.b));sv2();T("Appuntamento disdetto");R()}
 function conf(){if(!isO()&&pick&&taken(pick.d,pick.b,pick.t)){pick=null;T("Questo orario non è più disponibile");R();return}var cl=cl1(),pk=isO()?C.clients.filter(function(x){return x.id==pc})[0]:null;if(isO()&&!pk){T("Scegli prima il cliente dal tasto Cliente");return}last={id:Date.now(),c:pk?pk.n+" "+pk.c:fn(),s:C.services[si].n,b:pick.b,d:pick.d,t:pick.t,u:pk?pk.id:(cl?cl.id:null)};B.push(last);if(cl&&last.d==iso(new Date()))addO("Nuova prenotazione per oggi: "+last.c+" · "+last.s+" · "+lab(last.d)+" alle "+last.t+" con "+bn(last.b));pick=null;sv2();go("mine");calAsk(last)}
-function del(id){var q=B.filter(function(x){return x.id==id})[0];if(q&&cl1()){if(q.u!=cl1().id)return;addO("Disdetta: "+q.c+" · "+lab(q.d)+" alle "+q.t)}B=B.filter(function(x){return x.id!=id});sv2();R()}
+function cxTxt(m){return m>=60&&m%60==0?(m/60)+(m==60?" ora":" ore"):m+(m==1?" minuto":" minuti")}
+function del(id){var q=B.filter(function(x){return x.id==id})[0];if(q&&cl1()){if(q.u!=cl1().id)return;var lim=+C.set.cxm||0;if(lim>0){var dd=pd(q.d),m0=mn(q.t),at=new Date(dd.getFullYear(),dd.getMonth(),dd.getDate(),Math.floor(m0/60),m0%60).getTime();if(at-Date.now()<lim*60000){T("Non puoi più disdire: serve almeno "+cxTxt(lim)+" di anticipo. Contatta il negozio.");return}}addO("Disdetta: "+q.c+" · "+lab(q.d)+" alle "+q.t)}B=B.filter(function(x){return x.id!=id});sv2();R()}
 function nf(id){var x=B.filter(function(y){return y.id==id})[0];F=x?Object.assign({},x):{id:null,c:fn(),s:(C.services[0]||{n:""}).n,b:(C.barbers[0]||{id:0}).id,d:iso(new Date()),t:C.hours[1].s};F.err="";go("form")}
 function fs(){if(!F.c.trim()||!F.d||!F.t){F.err="Compila cliente, data e ora.";return R()}
  if(!isO()){var cl=cl1();if(cl){F.c=fn();F.u=cl.id}}else{var mk=C.clients.filter(function(x){return(x.n+" "+x.c).toLowerCase()==F.c.trim().toLowerCase()})[0];F.u=mk?mk.id:null}var od=F.id?(B.filter(function(y){return y.id==F.id})[0]||{}).d:null;
@@ -572,7 +573,7 @@ function calAdd(){var x=CALW;if(!x)return;var ics=calIcs(x);CALD=1;var b=documen
 function calFile(){var x=CALW;if(!x)return;try{var u=URL.createObjectURL(new Blob([calIcs(x)],{type:"text/calendar;charset=utf-8"})),a=document.createElement("a");a.href=u;a.download="appuntamento.ics";document.body.appendChild(a);a.click();setTimeout(function(){a.remove()},800)}catch(e5){window.open("data:text/calendar;charset=utf-8,"+encodeURIComponent(calIcs(x)))}}
 function calClose(){if(!CALD)return;var w=document.getElementById("calw");if(w)w.remove();CALW=null;try{sset("calp","null")}catch(e3){}R()}
 setInterval(function(){try{if(MODE=="owner"||CALW)return;var id=ld("calp");if(id==null)return;var x=B.filter(function(y){return y.id==id&&!y.anon})[0];if(x)calShow(x);else sset("calp","null")}catch(e4){}},2000);
-var BUILD="b2180";
+var BUILD="b2200";
 (function(){function cur(){return parseInt(String(BUILD).slice(1),10)||0}
  function show(b){if(document.getElementById("upd"))return;var d=document.createElement("div");d.id="upd";d.style.cssText="position:fixed;inset:0;z-index:2000;overflow:auto;display:flex;align-items:center;justify-content:center;padding:28px 24px;background:#0b0b0c;color:#fff;text-align:center;font:600 16px/1.4 Georgia,serif";
   d.innerHTML='<div style="max-width:420px"><h1 style="margin:0 0 12px;font-size:26px">Aggiornamento necessario</h1><p style="color:#a9b4bf;margin:0 0 26px">È disponibile una nuova versione dell’app. Per continuare a prenotare e usare l’app devi aggiornarla.</p><button style="width:100%;border:0;border-radius:6px;padding:16px;background:#ffffff;color:#111;font:700 17px Quicksand,sans-serif;letter-spacing:1px;text-transform:uppercase;cursor:pointer">Aggiorna ora</button><p id="updm" style="color:#a9b4bf;font-size:14px;min-height:20px;margin-top:14px"></p></div>';
