@@ -98,6 +98,7 @@ body{background:#0b0b0c !important;font-family:Georgia,"Times New Roman",serif !
 #gt{background:#0b0b0c !important}
 input,select,textarea{border-radius:4px !important}
 .dgh{display:flex !important;align-items:center;justify-content:flex-start;gap:14px;padding:6px 12px !important}.dgn{flex:none;text-align:left}.dga{display:flex;gap:-6px}.dga .ph{margin:0 0 0 -8px !important;border:2px solid #0b0b0c !important;width:30px;height:30px}.dga .ph:first-child{margin-left:0 !important}
+input[type=date]{display:block;width:100% !important;max-width:100% !important;min-width:0 !important;height:43px;-webkit-appearance:none;appearance:none;background:#0f0f0f;color:#fff;border:1px solid #2a2a2a;padding:0 12px;margin-bottom:8px;text-align:left;font:600 16px Georgia,serif;box-sizing:border-box;-webkit-text-fill-color:#fff}input[type=date]::-webkit-date-and-time-value{text-align:left;min-height:1.2em}input[type=date]::-webkit-calendar-picker-indicator{opacity:.7}
 </style></head><body>
 <header id="hd"></header>
 <div id="v"></div>
@@ -230,7 +231,7 @@ function R(){if(gate())return;if(!isO()&&/^(shop|fixed|fform|clients|cedit|pform
   else if(C.barbers.length>1){if(goD){for(var k=0;k<D.length;k++)if(iso(D[k])==goD){di=k;break}}
    var dsx=iso(D[di]);v='<div class="days">'+D.map(function(d,i){return'<button class="day '+(i==di?"on":"")+'" onclick="di='+i+';goD=\''+iso(d)+'\';pick=null;R()"><b>'+"DLMMGVS".charAt(d.getDay())+'</b><span>'+d.getDate()+'</span></button>'}).join("")+(isO()&&OWD>30?'<button class="day" onclick="OWD=Math.max(30,OWD-30);R()"><b>-30</b><span>‹</span></button>':'')+(isO()&&D.length>=OWD?'<button class="day" onclick="OWD+=30;R()"><b>+30</b><span>›</span></button>':'')+'</div>'+(isO()?dj():'')+'<div class="cols">'+D.map(function(d){var ds=iso(d);return'<div class="dg" data-d="'+ds+'"><div class="dt dgh"><span class="dgn">'+lab(ds)+'</span><span class="dga">'+C.barbers.map(function(b){return bph(b,30)}).join("")+'</span></div><div class="dgc">'+C.barbers.map(function(b){return bcol(ds,b)}).join("")+'</div></div>'}).join("")+'</div>'}
   else{if(!C.barbers.some(function(x){return x.id==sbid}))sbid=(C.barbers[0]||{}).id;
-   v='<div class="bs">';C.barbers.forEach(function(b){v+='<button class="bc '+(b.id==sbid?"on":"")+'" onclick="sbid='+b.id+';pick=null;R()"><span class="ph">'+e(b.name[0]||"?")+'</span>'+e(b.name)+'</button>'});v+='</div>'+(isO()?dj():'')+'<div class="cols">';
+   v='<div class="bs">';C.barbers.forEach(function(b){v+='<button class="bc '+(b.id==sbid?"on":"")+'" onclick="sbid='+b.id+';pick=null;R()">'+bph(b,34)+e(b.name)+'</button>'});v+='</div>'+(isO()?dj():'')+'<div class="cols">';
    D.forEach(function(d){var ds=iso(d),l=fr(ds,sbid),oo=bh(sbid,d.getDay()).o;
     v+='<div class="col" data-d="'+ds+'"><div class="card"><div class="dt">'+lab(ds)+'</div>'+(oo?'':'<div class="lp">Chiuso</div>')+(isO()?'':qb(sbid,ds))+'</div>';
     if(!isO()&&oo&&!l.length&&!full(ds,sbid))v+='<div class="none">Nessun posto</div>';
@@ -537,7 +538,7 @@ function logoPick(inp){var f=inp.files&&inp.files[0];if(!f)return;var r=new File
 function pickFile(cb){var i=document.createElement("input");i.type="file";i.accept="image/*";i.style.cssText="position:fixed;left:-999px;top:0;opacity:0";i.onchange=function(){cb(i);setTimeout(function(){if(i.parentNode)i.parentNode.removeChild(i)},3000)};document.body.appendChild(i);i.click()}
 document.addEventListener("click",function(ev){var t=ev.target;if(!t||!t.closest||!isO())return;if(t.closest(".av")){ev.preventDefault();pickFile(logoPick);return}var p=t.closest(".dga .ph,.card .ph,.bc .ph");if(p&&p.getAttribute("data-bid")){ev.stopPropagation();ev.preventDefault();var bid=p.getAttribute("data-bid");pickFile(function(inp){var k=-1;C.barbers.forEach(function(x,j){if(x.id==bid)k=j});if(k>=0)bphoto(k,inp)})}},true);
 applyLogo();setInterval(applyLogo,1500);
-var BUILD="b1340";
+var BUILD="b1360";
 (function(){try{fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var BUILD="(b[0-9]+)"/);if(m&&m[1]!=BUILD&&location.search.indexOf("v="+m[1])<0)location.replace(location.pathname+"?v="+m[1])}).catch(function(){})}catch(x){}})();
 idbInit();syncStart();setInterval(function(){try{if(isO())H()}catch(x){}},60000);document.addEventListener("visibilitychange",function(){if(document.visibilityState=="hidden"){try{sset("cfg",JSON.stringify(C));sset("bk2",JSON.stringify(B))}catch(x){}}});addEventListener("pagehide",function(){try{sset("cfg",JSON.stringify(C));sset("bk2",JSON.stringify(B))}catch(x){}});
 if(!LSOK)setTimeout(function(){T("Attenzione: il browser blocca il salvataggio locale. Apri l’app da Safari/Chrome, non da un’anteprima.")},1200);
