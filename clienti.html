@@ -95,6 +95,7 @@ body{background:#0b0b0c !important;font-family:Georgia,"Times New Roman",serif !
 .bc.on{border-color:#d8b36a !important;background:#1b1812 !important}
 #gt{background:#0b0b0c !important}
 input,select,textarea{border-radius:4px !important}
+.dgh{display:flex !important;align-items:center;justify-content:flex-start;gap:14px;padding:6px 12px !important}.dgn{flex:none;text-align:left}.dga{display:flex;gap:-6px}.dga .ph{margin:0 0 0 -8px !important;border:2px solid #0b0b0c !important;width:30px;height:30px}.dga .ph:first-child{margin-left:0 !important}
 </style></head><body>
 <header id="hd"></header>
 <div id="v"></div>
@@ -210,7 +211,7 @@ function R(){if(gate())return;if(!isO()&&/^(shop|fixed|fform|clients|cedit|pform
  if(tab=="home"){
   if(!D.length)v='<div class="none">Nessun giorno disponibile al momento.</div>';
   else if(C.barbers.length>1){if(goD){for(var k=0;k<D.length;k++)if(iso(D[k])==goD){di=k;break}}
-   var dsx=iso(D[di]);v='<div class="days">'+D.map(function(d,i){return'<button class="day '+(i==di?"on":"")+'" onclick="di='+i+';goD=\''+iso(d)+'\';pick=null;R()"><b>'+"DLMMGVS".charAt(d.getDay())+'</b><span>'+d.getDate()+'</span></button>'}).join("")+'</div><div class="cols">'+D.map(function(d){var ds=iso(d);return'<div class="dg" data-d="'+ds+'"><div class="dt dgh">'+lab(ds)+'</div><div class="dgc">'+C.barbers.map(function(b){return bcol(ds,b)}).join("")+'</div></div>'}).join("")+'</div>'}
+   var dsx=iso(D[di]);v='<div class="days">'+D.map(function(d,i){return'<button class="day '+(i==di?"on":"")+'" onclick="di='+i+';goD=\''+iso(d)+'\';pick=null;R()"><b>'+"DLMMGVS".charAt(d.getDay())+'</b><span>'+d.getDate()+'</span></button>'}).join("")+'</div><div class="cols">'+D.map(function(d){var ds=iso(d);return'<div class="dg" data-d="'+ds+'"><div class="dt dgh"><span class="dgn">'+lab(ds)+'</span><span class="dga">'+C.barbers.map(function(b){return bph(b,30)}).join("")+'</span></div><div class="dgc">'+C.barbers.map(function(b){return bcol(ds,b)}).join("")+'</div></div>'}).join("")+'</div>'}
   else{if(!C.barbers.some(function(x){return x.id==sbid}))sbid=(C.barbers[0]||{}).id;
    v='<div class="bs">';C.barbers.forEach(function(b){v+='<button class="bc '+(b.id==sbid?"on":"")+'" onclick="sbid='+b.id+';pick=null;R()"><span class="ph">'+e(b.name[0]||"?")+'</span>'+e(b.name)+'</button>'});v+='</div><div class="cols">';
    D.forEach(function(d){var ds=iso(d),l=fr(ds,sbid),oo=bh(sbid,d.getDay()).o;
@@ -465,7 +466,7 @@ document.addEventListener("contextmenu",function(ev){if(ev.target.closest&&ev.ta
 sv2();R();
 function applyLogo(){var i=document.querySelector(".av img");if(i&&C.logo&&i.src!==C.logo)i.src=C.logo}
 applyLogo();setInterval(applyLogo,1500);
-var BUILD="b1300";
+var BUILD="b1320";
 (function(){try{fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var BUILD="(b[0-9]+)"/);if(m&&m[1]!=BUILD&&location.search.indexOf("v="+m[1])<0)location.replace(location.pathname+"?v="+m[1])}).catch(function(){})}catch(x){}})();
 idbInit();syncStart();document.addEventListener("visibilitychange",function(){if(document.visibilityState=="hidden"){try{sset("cfg",JSON.stringify(C));sset("bk2",JSON.stringify(B))}catch(x){}}});addEventListener("pagehide",function(){try{sset("cfg",JSON.stringify(C));sset("bk2",JSON.stringify(B))}catch(x){}});
 if(!LSOK)setTimeout(function(){T("Attenzione: il browser blocca il salvataggio locale. Apri l’app da Safari/Chrome, non da un’anteprima.")},1200);
