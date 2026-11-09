@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="it"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Barberapp</title>
+<title>Barbershop Da Aldu</title><meta name="apple-mobile-web-app-title" content="Da Aldu"><meta name="application-name" content="Barbershop Da Aldu">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&display=swap">
 <style>
 :root{--bl:#d8b36a;--bl2:#b8914a;--ye:#ebb941;--card:#000;--pill:rgba(22,50,78,.85);box-sizing:border-box;padding-top:env(safe-area-inset-top,0px)}
@@ -264,7 +264,7 @@ function T(m,g){var t=document.getElementById("tt");t.textContent=m;t.onclick=g?
 function cq(){if(MODE=="owner")return;if(!C.queue)C.queue=[];if(!C.nots)C.nots=[];var t0=iso(new Date()),fired=[];
  C.queue=C.queue.filter(function(x){if(x.d<t0||!C.barbers.some(function(b){return b.id==x.b}))return false;var f=fr(x.d,x.b);if(!f.length)return true;fired.push({x:x,f:f});return false});
  fired.forEach(function(z){var m="Si è liberato un posto con "+bn(z.x.b)+" · "+lab(z.x.d)+" alle "+z.f[0];C.nots.unshift({id:"q"+z.x.id,m:m,d:z.x.d,u:1,cid:z.x.cid||null});
-  if(C.set.notif){T(m,1);try{if(window.Notification&&Notification.permission=="granted")new Notification("Barberapp",{body:m})}catch(x){}}});
+  if(C.set.notif){T(m,1);try{if(window.Notification&&Notification.permission=="granted")new Notification(C.shop||"Barbershop Da Aldu",{body:m})}catch(x){}}});
  C.nots=C.nots.slice(0,30)}
 var sbid=null,goD=null;
 function tq(b,ds){ds=ds||iso(D[di]);var k=C.queue.filter(function(x){return x.d==ds&&x.b==b})[0];
@@ -498,7 +498,7 @@ function oa(){if(!C.pin){if(!/^\d{4,8}$/.test(OP)){GE="Il PIN deve avere da 4 a 
  else if(OP!=C.pin){GE="PIN errato.";return gate()}
  ME={role:"owner"};sm();OP=OP2=GE="";sv2();try{if(window.Notification&&Notification.permission=="default")Notification.requestPermission()}catch(x){}R()}
 addEventListener("storage",function(ev){if(ev.key!="cfg"&&ev.key!="bk2")return;var p=pend().length,u=C.onots.filter(function(n){return n.u}).length;rl();
- if(isO()&&(pend().length>p||C.onots.filter(function(n){return n.u}).length>u)){var m=C.onots[0]?C.onots[0].m:"Nuovo cliente da autorizzare";if(C.set.notif){T(m,1);try{if(window.Notification&&Notification.permission=="granted")new Notification("Barberapp",{body:m})}catch(x){}}}
+ if(isO()&&(pend().length>p||C.onots.filter(function(n){return n.u}).length>u)){var m=C.onots[0]?C.onots[0].m:"Nuovo cliente da autorizzare";if(C.set.notif){T(m,1);try{if(window.Notification&&Notification.permission=="granted")new Notification(C.shop||"Barbershop Da Aldu",{body:m})}catch(x){}}}
  if(!/^(form|fform|shop|cedit)$/.test(tab)&&!(!ME||(ME.role=="client"&&!cl1())))R()});
 setInterval(function(){var c=cl1();if(c&&c.st!="ok"){var s0=c.st;rl();var c1=cl1();if(!c1||c1.st!=s0)R()}},3000);
 
@@ -552,12 +552,12 @@ function calAdd(){var x=CALW;if(!x)return;var ics=calIcs(x);CALD=1;var b=documen
  try{var a=document.createElement("a");a.href="data:text/calendar;charset=utf-8,"+encodeURIComponent(ics);a.download="appuntamento.ics";document.body.appendChild(a);a.click();setTimeout(function(){a.remove()},800)}catch(e2){window.location.href="data:text/calendar;charset=utf-8,"+encodeURIComponent(ics)}}
 function calClose(){if(!CALD)return;var w=document.getElementById("calw");if(w)w.remove();CALW=null;try{sset("calp","null")}catch(e3){}R()}
 setInterval(function(){try{if(MODE=="owner"||CALW)return;var id=ld("calp");if(id==null)return;var x=B.filter(function(y){return y.id==id&&!y.anon})[0];if(x)calShow(x);else sset("calp","null")}catch(e4){}},2000);
-var BUILD="b2040";
+var BUILD="b2060";
 (function(){function cur(){return parseInt(String(BUILD).slice(1),10)||0}
- function show(b){if(document.getElementById("upd"))return;var d=document.createElement("div");d.id="upd";d.style.cssText="position:sticky;top:0;z-index:90;display:flex;align-items:center;gap:10px;padding:calc(10px + env(safe-area-inset-top,0px)) 14px 10px;background:#d8b36a;color:#111;font:700 15px Quicksand,Georgia,serif;box-shadow:0 4px 16px rgba(0,0,0,.5)";
-  d.innerHTML='<span style="flex:1">Nuova versione dell’app disponibile</span><button style="border:0;border-radius:6px;padding:9px 14px;background:#111;color:#d8b36a;font:700 14px Quicksand,sans-serif;cursor:pointer">Aggiorna</button>';
-  d.querySelector("button").onclick=function(){this.textContent="Aggiorno…";location.replace(location.pathname+"?v="+b+"&t="+Date.now())};
-  document.body.insertBefore(d,document.body.firstChild)}
+ function show(b){if(document.getElementById("upd"))return;var d=document.createElement("div");d.id="upd";d.style.cssText="position:fixed;inset:0;z-index:2000;overflow:auto;display:flex;align-items:center;justify-content:center;padding:28px 24px;background:#0b0b0c;color:#fff;text-align:center;font:600 16px/1.4 Georgia,serif";
+  d.innerHTML='<div style="max-width:420px"><h1 style="margin:0 0 12px;font-size:26px">Aggiornamento necessario</h1><p style="color:#a9b4bf;margin:0 0 26px">È disponibile una nuova versione dell’app. Per continuare a prenotare e usare l’app devi aggiornarla.</p><button style="width:100%;border:0;border-radius:6px;padding:16px;background:#d8b36a;color:#111;font:700 17px Quicksand,sans-serif;letter-spacing:1px;text-transform:uppercase;cursor:pointer">Aggiorna ora</button><p id="updm" style="color:#a9b4bf;font-size:14px;min-height:20px;margin-top:14px"></p></div>';
+  d.querySelector("button").onclick=function(){this.textContent="Aggiorno…";document.getElementById("updm").textContent="Se dopo l’aggiornamento vedi ancora questo avviso, aspetta un minuto e riprova.";location.replace(location.pathname+"?v="+b+"&t="+Date.now())};
+  document.body.appendChild(d);document.documentElement.style.overflow="hidden"}
  function chk(){try{fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var BUILD="(b[0-9]+)";/);if(m&&(parseInt(m[1].slice(1),10)||0)>cur())show(m[1])}).catch(function(){})}catch(x){}}
  chk();setInterval(chk,60000);document.addEventListener("visibilitychange",function(){if(document.visibilityState=="visible")chk()})})();
 idbInit();syncStart();document.addEventListener("visibilitychange",function(){if(document.visibilityState=="hidden"){try{sset("cfg",JSON.stringify(C));sset("bk2",JSON.stringify(B))}catch(x){}}});addEventListener("pagehide",function(){try{sset("cfg",JSON.stringify(C));sset("bk2",JSON.stringify(B))}catch(x){}});
