@@ -446,6 +446,8 @@ document.addEventListener("pointercancel",function(){if(DR&&!DR.on){dEnd();DR=nu
 document.addEventListener("touchmove",function(ev){if(DR&&DR.on)ev.preventDefault()},{passive:false});
 document.addEventListener("contextmenu",function(ev){if(ev.target.closest&&ev.target.closest(".bkd"))ev.preventDefault()});
 sv2();R();
+var BUILD="b0906";
+(function(){try{fetch(location.pathname+"?c="+Date.now(),{cache:"no-store"}).then(function(r){return r.text()}).then(function(t){var m=t.match(/var BUILD="(b[0-9]+)"/);if(m&&m[1]!=BUILD&&location.search.indexOf("v="+m[1])<0)location.replace(location.pathname+"?v="+m[1])}).catch(function(){})}catch(x){}})();
 idbInit();syncStart();document.addEventListener("visibilitychange",function(){if(document.visibilityState=="hidden"){try{sset("cfg",JSON.stringify(C));sset("bk2",JSON.stringify(B))}catch(x){}}});addEventListener("pagehide",function(){try{sset("cfg",JSON.stringify(C));sset("bk2",JSON.stringify(B))}catch(x){}});
 if(!LSOK)setTimeout(function(){T("Attenzione: il browser blocca il salvataggio locale. Apri l’app da Safari/Chrome, non da un’anteprima.")},1200);
 </script></body></html>
