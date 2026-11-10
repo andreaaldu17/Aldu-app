@@ -120,16 +120,16 @@ var DEF={shop:"Barbershop Da Aldu",user:"andrea",step:20,nid:10,queue:[],nots:[]
 barbers:[{id:1,name:"Andrea"}],
 services:[{n:"Taglio",p:15,m:30},{n:"Taglio e shampoo",p:18,m:30},{n:"Barba",p:10,m:10},{n:"Taglio + barba",p:20,m:40}]};
 var C,B=[];
-var MEM={},IDB=null,LSOK=true;
+var MEM={},IDB=null,LSOK=true,PRL=false;setTimeout(function(){PRL=true},4000);
 (function(){try{localStorage.setItem("_t","1");localStorage.removeItem("_t")}catch(x){LSOK=false}})();
 function idbSet(k,v){try{if(IDB)IDB.transaction("kv","readwrite").objectStore("kv").put(v,k)}catch(x){}}
-function sset(k,v){MEM[k]=v;try{localStorage.setItem(k,v)}catch(x){if(LSOK&&typeof T=="function")T("Memoria del browser piena: usa foto più piccole o elimina qualche prodotto")}idbSet(k,v)}
-function ld(k){var v=null;try{v=localStorage.getItem(k)}catch(x){}if(v==null)v=MEM[k];try{return v==null?null:JSON.parse(v)}catch(x){return null}}
+function sset(k,v){MEM[k]=v;if(k=="prd"){idbSet(k,v);return}try{localStorage.setItem(k,v)}catch(x){if(LSOK&&typeof T=="function")T("Memoria del browser piena: usa foto più piccole o elimina qualche prodotto")}idbSet(k,v)}
+function ld(k){var v=null;if(k!="prd")try{v=localStorage.getItem(k)}catch(x){}if(v==null)v=MEM[k];try{return v==null?null:JSON.parse(v)}catch(x){return null}}
 function idbInit(){try{var r=indexedDB.open("barberapp",1);r.onupgradeneeded=function(){r.result.createObjectStore("kv")};
- r.onsuccess=function(){IDB=r.result;try{var st=IDB.transaction("kv","readwrite").objectStore("kv"),keys=["cfg","bk2","me_owner","me_client"],got=0,done=0;
-  keys.forEach(function(k){var q=st.get(k);q.onsuccess=function(){var have=null;try{have=localStorage.getItem(k)}catch(x){}if(have==null)have=MEM[k];
-   if(have==null&&q.result!=null){MEM[k]=q.result;try{localStorage.setItem(k,q.result)}catch(x){}got++}else if(have!=null){idbSet(k,have)}
-   if(++done==keys.length&&got){try{rl();ME=ld("me_"+MODE);R()}catch(x){}}}})}catch(x){}};}catch(x){}
+ r.onsuccess=function(){IDB=r.result;try{var st=IDB.transaction("kv","readwrite").objectStore("kv"),keys=["cfg","bk2","prd","me_owner","me_client"],got=0,done=0;
+  keys.forEach(function(k){var q=st.get(k);q.onsuccess=function(){var have=null;if(k!="prd")try{have=localStorage.getItem(k)}catch(x){}if(have==null)have=MEM[k];
+   if(have==null&&q.result!=null){MEM[k]=q.result;if(k!="prd")try{localStorage.setItem(k,q.result)}catch(x){}got++}else if(have!=null){idbSet(k,have)}
+   if(++done==keys.length){if(got){try{rl();ME=ld("me_"+MODE);R()}catch(x){}}PRL=true}}})}catch(x){}};}catch(x){}
  try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist()}catch(x){}}
 var sc=ld("cfg")||{};if(!sc.hours&&sc.start){sc.hours=[0,1,2,3,4,5,6].map(function(i){return{o:sc.open?sc.open[i]:1,s:sc.start,e:sc.end,bs:sc.bs,be:sc.be}})}C=Object.assign({},JSON.parse(JSON.stringify(DEF)),sc);B=ld("bk2")||[];C.set=Object.assign({},DEF.set,C.set);
 function sv2(){cq();lsave();syncPush()}
@@ -140,7 +140,7 @@ function sget(k){return k=="cl"?C.clients:k=="bk"?B:k=="q"?C.queue:k=="nt"?C.not
 function sput(k,a){if(k=="cl")C.clients=a;else if(k=="bk")B=a;else if(k=="q")C.queue=a;else if(k=="nt")C.nots=a;else if(k=="on")C.onots=a;else if(k=="fx")C.fixed=a;else C.products=a}
 function smap(a){var m={};(a||[]).forEach(function(x){if(x&&x.id!=null)m[skey(x.id)]=JSON.stringify(x)});return m}
 function cfgObj(){return{theme:C.theme||"bianco",logo:C.logo||null,shop:C.shop,promo:C.promo,step:C.step,nid:C.nid,hours:C.hours,barbers:C.barbers,services:C.services,blocked:C.blocked||[],vd:+C.set.viewDays||30,cx:+C.set.cxm||0,gu:C.gurl||"",ns:+C.set.nsm||0,cl:C.cl||null}}
-function lsave(){sset("cfg",JSON.stringify(C));sset("bk2",JSON.stringify(B))}
+function lsave(){if(PRL||(C.products&&C.products.length))sset("prd",JSON.stringify(C.products||[]));sset("cfg",JSON.stringify(C,function(k,v){return k=="products"&&this===C?undefined:v}));sset("bk2",JSON.stringify(B))}
 function syncPush(){SY.ver++;SY.pend=true;clearTimeout(SY.t);if(SY.init)SY.t=setTimeout(doPush,400)}
 function nj(o){if(o===null||typeof o!="object")return JSON.stringify(o);if(Array.isArray(o))return"["+o.map(nj).join(",")+"]";return"{"+Object.keys(o).filter(function(k){return o[k]!==undefined}).sort().map(function(k){return JSON.stringify(k)+":"+nj(o[k])}).join(",")+"}"}
 function sha(s){function ro(x,n){return(x>>>n)|(x<<(32-n))}
@@ -526,7 +526,7 @@ function ab(){if(!BL.f){BL.err="Scegli la data di inizio.";return R()}var u=BL.u
 function rbk(id){C.blocked=C.blocked.filter(function(x){return x.id!=id});sv2();R()}
 function ex(){ME=null;sm();GM=MODE=="owner"?"own":"reg";tab="home";R()}
 function ck(){rl();R()}
-function rl(){var s=ld("cfg");if(s){C=Object.assign({},JSON.parse(JSON.stringify(DEF)),s);C.set=Object.assign({},DEF.set,C.set)}B=ld("bk2")||[]}
+function rl(){var s=ld("cfg");if(s){C=Object.assign({},JSON.parse(JSON.stringify(DEF)),s);C.set=Object.assign({},DEF.set,C.set)}var pp=ld("prd");if(pp&&pp.length)C.products=pp;B=ld("bk2")||[]}
 var LF={tel:"",pin:""},CE={},pc=null,cpo=false,CQ="";
 function pcn(){var k=C.clients.filter(function(x){return x.id==pc})[0];return k?k.n+" "+k.c:""}
 function cpl(){var q=CQ.trim().toLowerCase(),l=C.clients.filter(function(x){return x.st=="ok"&&(x.n+" "+x.c+" "+x.tel).toLowerCase().indexOf(q)>=0}).sort(function(a,b){return(a.c+a.n).toLowerCase()<(b.c+b.n).toLowerCase()?-1:1}),h='';
@@ -636,7 +636,7 @@ function calAdd(){var x=CALW;if(!x)return;var ics=calIcs(x);CALD=1;var b=documen
 function calFile(){var x=CALW;if(!x)return;try{var u=URL.createObjectURL(new Blob([calIcs(x)],{type:"text/calendar;charset=utf-8"})),a=document.createElement("a");a.href=u;a.download="appuntamento.ics";document.body.appendChild(a);a.click();setTimeout(function(){a.remove()},800)}catch(e5){window.open("data:text/calendar;charset=utf-8,"+encodeURIComponent(calIcs(x)))}}
 function calClose(){if(!CALD)return;var w=document.getElementById("calw");if(w)w.remove();CALW=null;try{sset("calp","null")}catch(e3){}R()}
 setInterval(function(){try{if(MODE=="owner"||CALW)return;var id=ld("calp");if(id==null)return;var x=B.filter(function(y){return y.id==id&&!y.anon})[0];if(x)calShow(x);else sset("calp","null")}catch(e4){}},2000);
-var BUILD="b2379";
+var BUILD="b2381";
 (function(){function cur(){return parseInt(String(BUILD).slice(1),10)||0}
  function show(b){if(document.getElementById("upd"))return;var d=document.createElement("div");d.id="upd";d.style.cssText="position:fixed;inset:0;z-index:2000;overflow:auto;display:flex;align-items:center;justify-content:center;padding:28px 24px;background:#0b0b0c;color:#fff;text-align:center;font:600 16px/1.4 Georgia,serif";
   d.innerHTML='<div style="max-width:420px"><h1 style="margin:0 0 12px;font-size:26px">Aggiornamento necessario</h1><p style="color:#a9b4bf;margin:0 0 26px">È disponibile una nuova versione dell’app. Per continuare a prenotare e usare l’app devi aggiornarla.</p><button style="width:100%;border:0;border-radius:6px;padding:16px;background:#ffffff;color:#111;font:700 17px Quicksand,sans-serif;letter-spacing:1px;text-transform:uppercase;cursor:pointer">Aggiorna ora</button><p id="updm" style="color:#a9b4bf;font-size:14px;min-height:20px;margin-top:14px"></p></div>';
