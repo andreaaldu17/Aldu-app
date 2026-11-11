@@ -951,7 +951,7 @@ function fn(){var c=cl1();return isO()?C.user:(c?c.n+" "+c.c:"")}
 function wn(){var c=cl1();return isO()?C.user:(c?c.n:"")}
 function dotv(){return isO()?(pend().length||C.onots.some(function(n){return n.u})):(C.set.notif&&C.nots.some(function(n){return n.u}))}
 function rnd(n){var a="abcdefghjkmnpqrstuvwxyz23456789",s="",i;try{var u=new Uint8Array(n);crypto.getRandomValues(u);for(i=0;i<n;i++)s+=a[u[i]%a.length]}catch(x){for(i=0;i<n;i++)s+=a[Math.floor(Math.random()*a.length)]}return s}
-function nfy(tp,m,tt){if(!tp||!m)return;try{fetch("https://ntfy.sh/",{method:"POST",body:JSON.stringify({topic:tp,title:tt||C.shop||"Barbershop Da Aldu",message:m,priority:4,tags:["scissors"]})}).catch(function(){})}catch(x){}}
+function nfy(tp,m,tt){if(!tp||!m)return;try{fetch("https://ntfy.sh/",{method:"POST",body:JSON.stringify({topic:tp,title:tt||C.shop||"Barbershop Da Aldu",message:m,priority:4,tags:["scissors"],icon:"https://andreaaldu17.github.io/Aldu-app/logo-notifica.png"})}).catch(function(){})}catch(x){}}
 function ntTp(){return isO()?(C.nto||""):((cl1()||{}).nt||"")}
 function ntOn(){if(isO()){if(!C.nto)C.nto="aldu-t-"+rnd(20)}else{var c=cl1();if(!c){T("Accedi prima al tuo account");return}if(!c.nt)c.nt="aldu-c-"+rnd(20)}sv2();R()}
 function ntCp(){var t=ntTp();try{navigator.clipboard.writeText(t).then(function(){T("Nome copiato")},function(){T("Tieni premuto sul nome per copiarlo")})}catch(x){T("Tieni premuto sul nome per copiarlo")}}
