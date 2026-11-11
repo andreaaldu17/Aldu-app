@@ -707,13 +707,13 @@ var C,B=[];
 var MEM={},IDB=null,LSOK=true,PRL=false;setTimeout(function(){PRL=true},4000);
 (function(){try{localStorage.setItem("_t","1");localStorage.removeItem("_t")}catch(x){LSOK=false}})();
 function idbSet(k,v){try{if(IDB)IDB.transaction("kv","readwrite").objectStore("kv").put(v,k)}catch(x){}}
-function sset(k,v){MEM[k]=v;if(k=="prd"){idbSet(k,v);return}try{localStorage.setItem(k,v)}catch(x){if(LSOK&&typeof T=="function")T("Memoria del browser piena: usa foto più piccole o elimina qualche prodotto")}idbSet(k,v)}
+function lsLight(v){try{var o=JSON.parse(v);delete o.logo;delete o.nots;delete o.onots;o.barbers=(o.barbers||[]).map(function(b){var c=Object.assign({},b);delete c.img;return c});return JSON.stringify(o)}catch(x){return v}}function cfgMerge(raw){try{var r=JSON.parse(raw),ch=0;if(!C.logo&&r.logo){C.logo=r.logo;ch=1}(r.barbers||[]).forEach(function(b){var x=(C.barbers||[]).filter(function(y){return y.id==b.id})[0];if(x&&!x.img&&b.img){x.img=b.img;ch=1}});if(!(C.nots&&C.nots.length)&&r.nots&&r.nots.length){C.nots=r.nots;ch=1}if(!(C.onots&&C.onots.length)&&r.onots&&r.onots.length){C.onots=r.onots;ch=1}if(ch){try{applyLogo()}catch(x){}R()}}catch(x){}}var CFGFULL=null;function sset(k,v){MEM[k]=v;if(k=="prd"){idbSet(k,v);return}var w=k=="cfg"?lsLight(v):v,ok=0;try{localStorage.setItem(k,w);ok=1}catch(x){try{localStorage.removeItem("bka");localStorage.setItem(k,w);ok=1}catch(y){}}if(!ok){try{localStorage.removeItem(k)}catch(x){}}idbSet(k,v)}
 function ld(k){var v=null;if(k!="prd")try{v=localStorage.getItem(k)}catch(x){}if(v==null)v=MEM[k];try{return v==null?null:JSON.parse(v)}catch(x){return null}}
 function idbInit(){try{var r=indexedDB.open("barberapp",1);r.onupgradeneeded=function(){r.result.createObjectStore("kv")};
  r.onsuccess=function(){IDB=r.result;try{var st=IDB.transaction("kv","readwrite").objectStore("kv"),keys=["cfg","bk2","prd","me_owner","me_client"],got=0,done=0;
   keys.forEach(function(k){var q=st.get(k);q.onsuccess=function(){var have=null;if(k!="prd")try{have=localStorage.getItem(k)}catch(x){}if(have==null)have=MEM[k];
-   if(have==null&&q.result!=null){MEM[k]=q.result;if(k!="prd")try{localStorage.setItem(k,q.result)}catch(x){}got++}else if(have!=null){idbSet(k,have)}
-   if(++done==keys.length){if(got){try{rl();ME=ld("me_"+MODE);R()}catch(x){}}PRL=true}}})}catch(x){}};}catch(x){}
+   if(k=="cfg"&&q.result!=null)CFGFULL=q.result;if(have==null&&q.result!=null){MEM[k]=q.result;if(k!="prd")try{localStorage.setItem(k,k=="cfg"?lsLight(q.result):q.result)}catch(x){}got++}else if(have!=null){if(!(k=="cfg"&&q.result!=null))idbSet(k,have)}
+   if(++done==keys.length){if(got){try{rl();ME=ld("me_"+MODE);R()}catch(x){}}if(CFGFULL)cfgMerge(CFGFULL);PRL=true}}})}catch(x){}};}catch(x){}
  try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist()}catch(x){}}
 var sc=ld("cfg")||{};if(!sc.hours&&sc.start){sc.hours=[0,1,2,3,4,5,6].map(function(i){return{o:sc.open?sc.open[i]:1,s:sc.start,e:sc.end,bs:sc.bs,be:sc.be}})}C=Object.assign({},JSON.parse(JSON.stringify(DEF)),sc);B=ld("bk2")||[];C.set=Object.assign({},DEF.set,C.set);
 function sv2(){cq();lsave();syncPush()}
@@ -933,7 +933,7 @@ function msgOpen(){if(document.getElementById("msgm"))return;if(!MSGX.d)MSGX.d=i
  document.getElementById("msgx").onclick=msgClose;document.getElementById("msgs").onclick=msgSend;msgUp()}
 function msgSend(){var t=document.getElementById("msgt").value.replace(/^\s+|\s+$/g,""),a=msgTgt();if(!t||!a.length)return;
  a.forEach(function(c){C.nots.unshift({id:"m"+Date.now()+Math.floor(Math.random()*1e6),m:t,u:1,cid:c.id,bc:1,t:Date.now()});if(c.nt)nfy(c.nt,t,C.shop||"Barbershop Da Aldu")});
- C.nots=C.nots.slice(0,600);MSGX.sel={};sv2();msgClose();var pn=a.filter(function(c){return c.nt}).length;T((a.length==1?"Messaggio inviato a 1 cliente":"Messaggio inviato a "+a.length+" clienti")+(pn<a.length?" · "+(a.length-pn)+" senza notifica sul telefono":""))}
+ C.nots=C.nots.filter(function(n){return!n.bc||!n.t||Date.now()-n.t<12096e5}).slice(0,300);MSGX.sel={};sv2();msgClose();var pn=a.filter(function(c){return c.nt}).length;T((a.length==1?"Messaggio inviato a 1 cliente":"Messaggio inviato a "+a.length+" clienti")+(pn<a.length?" · "+(a.length-pn)+" senza notifica sul telefono":""))}
 function msgFab(){}
 function msgNb(){return'<button class="nb" aria-label="Messaggi" onclick="msgOpen()" style="padding:10px 14px"><span style="display:flex;align-items:center;justify-content:center"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" style="fill:none"><path d="M3.5 20.5l1.2-4.3A8.5 8.5 0 1 1 8 19.4z"/><path d="M9.2 8.4c.3-.5.8-.5 1-.2l.9 1.6c.1.3 0 .6-.2.8l-.5.5c.6 1.2 1.6 2.1 2.8 2.7l.5-.6c.2-.2.5-.3.8-.1l1.6.8c.3.2.3.6 0 1-.5.8-1.4 1.1-2.3.8-2.5-.8-4.4-2.7-5.2-5.2-.1-.5 0-1 .6-1.6z" style="fill:currentColor;stroke:none"/></svg></span></button>'}
 function bcNots(){var a=(C.nots||[]).filter(function(n){return n.bc});if(!a.length)return"";var h='<h3 class="sh">Messaggi dal salone</h3><div style="background:#0b141a;border-radius:16px;padding:12px 10px;margin-bottom:10px;display:flex;flex-direction:column;gap:6px">';a.forEach(function(n){h+='<div style="align-self:flex-start;max-width:86%;background:#202c33;color:#e9edef;border-radius:12px 12px 12px 2px;padding:7px 10px 5px;font:400 16px/1.35 -apple-system,\'Segoe UI\',sans-serif;word-break:break-word"><span style="white-space:pre-wrap">'+e(n.m)+'</span><div style="text-align:right;font:400 11px sans-serif;color:#8696a0;margin-top:2px">'+(n.t?msgHM(n.t):"")+'</div></div>'});return h+'</div><button class="sm" onclick="C.nots=C.nots.filter(function(n){return!n.bc});sv2();R()">Cancella messaggi</button>'}
@@ -957,6 +957,10 @@ function ntgShow(){var c=cl1();if(!c)return;if(!c.nt){c.nt="aldu-c-"+rnd(20);sv2
  document.getElementById("ntgok").onclick=function(){if(!NTGT)return;var c=cl1();if(c){c.ntok=1;sv2()}ntgClose()};ntgUp()}
 function ntgCheck(){try{if(MODE=="owner"||isO())return;var c=cl1();if(!c||c.st!="ok"||(c.nt&&c.ntok))return;if(document.getElementById("ntgm"))return;var g=document.getElementById("gt");if(g&&g.style.display=="block")return;ntgShow()}catch(x){}}
 setInterval(ntgCheck,1500);
+/*CANCELLA PRENOTAZIONI VECCHIE (oltre 2 mesi)*/
+function purOld(){try{if(MODE!="owner"||!isO()||!SY||!SY.init||!PRL)return;var t=new Date();t.setMonth(t.getMonth()-2);var cut=iso(t),n=B.length;
+ var k=B.filter(function(x){return!(x&&x.d&&x.d<cut)});if(k.length!=n){B=k;sv2()}}catch(x){}}
+setTimeout(purOld,9000);setInterval(purOld,600000);
 function ordn(x){var n=parseFloat(String(x.id).replace(/^q/,""));return isNaN(n)?0:n}
 function syncPull(){if(SY.busy||(SY.pend&&SY.init))return;
  var ow=MODE=="owner";if(ow&&!isO())return;
@@ -1461,7 +1465,7 @@ function calAdd(){var x=CALW;if(!x)return;var ics=calIcs(x);CALD=1;var b=documen
 function calFile(){var x=CALW;if(!x)return;try{var u=URL.createObjectURL(new Blob([calIcs(x)],{type:"text/calendar;charset=utf-8"})),a=document.createElement("a");a.href=u;a.download="appuntamento.ics";document.body.appendChild(a);a.click();setTimeout(function(){a.remove()},800)}catch(e5){window.open("data:text/calendar;charset=utf-8,"+encodeURIComponent(calIcs(x)))}}
 function calClose(){if(!CALD)return;var w=document.getElementById("calw");if(w)w.remove();CALW=null;try{sset("calp","null")}catch(e3){}R()}
 setInterval(function(){try{if(MODE=="owner"||CALW)return;var id=ld("calp");if(id==null)return;var x=B.filter(function(y){return y.id==id&&!y.anon})[0];if(x)calShow(x);else sset("calp","null")}catch(e4){}},2000);
-var BUILD="b2425";
+var BUILD="b2429";
 (function(){function cur(){return parseInt(String(BUILD).slice(1),10)||0}
  function show(b){if(document.getElementById("upd"))return;var d=document.createElement("div");d.id="upd";d.style.cssText="position:fixed;inset:0;z-index:2000;overflow:auto;display:flex;align-items:center;justify-content:center;padding:28px 24px;background:#0b0b0c;color:#fff;text-align:center;font:600 16px/1.4 Georgia,serif";
   d.innerHTML='<div style="max-width:420px"><h1 style="margin:0 0 12px;font-size:26px">Aggiornamento necessario</h1><p style="color:#a9b4bf;margin:0 0 26px">È disponibile una nuova versione dell’app. Per continuare a prenotare e usare l’app devi aggiornarla.</p><button style="width:100%;border:0;border-radius:6px;padding:16px;background:#ffffff;color:#111;font:700 17px Quicksand,sans-serif;letter-spacing:1px;text-transform:uppercase;cursor:pointer">Aggiorna ora</button><p id="updm" style="color:#a9b4bf;font-size:14px;min-height:20px;margin-top:14px"></p></div>';
