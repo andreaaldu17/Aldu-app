@@ -728,7 +728,7 @@ function idbInit(){try{var r=indexedDB.open("barberapp",1);r.onupgradeneeded=fun
  try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist()}catch(x){}}
 var sc=ld("cfg")||{};var CFGOK=!!(sc.hours&&sc.hours.length&&sc._ok!==0);if(!sc.hours&&sc.start){sc.hours=[0,1,2,3,4,5,6].map(function(i){return{o:sc.open?sc.open[i]:1,s:sc.start,e:sc.end,bs:sc.bs,be:sc.be}})}C=Object.assign({},JSON.parse(JSON.stringify(DEF)),sc);B=ld("bk2")||[];C.set=Object.assign({},DEF.set,C.set);fixSv();
 function sv2(){try{dlWatch()}catch(x){}cq();lsave();syncPush()}
-var SY={url:"https://aldu-app-default-rtdb.europe-west1.firebasedatabase.app/barberapp",snap:{},pend:false,t:null,pv:0,busy:false,init:false,sig:"",rr:false,cfs:"",ok:false,ver:0,sending:false,mig:false,psig:"",pt:0,hadU:false,psn:{}};
+var SY={url:"https://aldu-app-default-rtdb.europe-west1.firebasedatabase.app/barberapp",snap:{},pend:false,t:null,pv:(function(){try{return+localStorage.getItem("spv")||0}catch(x){return 0}})(),busy:false,init:false,sig:"",rr:false,cfs:"",ok:false,ver:0,sending:false,mig:false,psig:"",pt:0,hadU:false,psn:{}};
 var SK=["cl","bk","q","nt","on","fx"],DUc=0;
 function skey(id){return String(id).replace(/[.$#\[\]\/]/g,"_")}
 function sget(k){return k=="cl"?C.clients:k=="bk"?B:k=="q"?C.queue:k=="nt"?C.nots:k=="on"?C.onots:k=="fx"?C.fixed:C.products}
@@ -805,7 +805,7 @@ function doPush(){clearTimeout(SY.t);if(SY.sending){SY.t=setTimeout(doPush,500);
   if(ow){if(pn)ps.push(F("/prod","PATCH",pu));if(n)ps.push(F("","PATCH",up))}
   else{if(n)ps.push(F("/u/"+k0,"PATCH",up));if(sn)ps.push(F("/pub/slots","PATCH",sl));Object.keys(pex).forEach(function(id){ps.push(F("/pub/fx/"+id+"/ex","PUT",pex[id]))})}
   return Promise.all(ps).then(function(){if(ow&&SY.mig)return fetch(SY.url+"/main.json"+Q,{method:"DELETE"}).then(function(r){if(r.ok)SY.mig=false})})
- }).then(function(){SY.snap=cm;if(cs)SY.cfs=cs;if(ds){SY.psig=ds;SY.pt=Date.now()}if(pm){SY.psn=pm;SY.pv=pv;SY.cvs=cvn}SY.ok=true;SY.sending=false;if(SY.ver==v0)SY.pend=false}).catch(function(){SY.ok=false;SY.sending=false;SY.t=setTimeout(doPush,5000)})}
+ }).then(function(){SY.snap=cm;if(cs)SY.cfs=cs;if(ds){SY.psig=ds;SY.pt=Date.now()}if(pm){SY.psn=pm;spv(pv);SY.cvs=cvn}SY.ok=true;SY.sending=false;if(SY.ver==v0)SY.pend=false}).catch(function(){SY.ok=false;SY.sending=false;SY.t=setTimeout(doPush,5000)})}
 
 var ONL={m:{},t:0};
 function quL(ds,b){return(C.queue||[]).filter(function(x){return x.d==ds&&(b==null||x.b==b)})}
@@ -931,7 +931,7 @@ function torDt(k,v){if(!TR||!TR.img)return;var o=k=="f"?(TR.t||""):(TR.f||"");if
 function torOk(d){var n=iso(new Date());if(d.f&&n<d.f)return false;if(d.t&&n>d.t)return false;return true}
 function torClose(forever){var o=document.getElementById("torm");if(o&&o.parentNode)o.parentNode.removeChild(o)}
 function torCheck(){try{if(MODE=="owner"||isO()||TRSH)return;var c=cl1();if(!c||c.st!="ok"||document.getElementById("gt")&&document.getElementById("gt").style.display=="block")return;TRSH=1;
- fetch(SY.url+"/pub/tor.json",{cache:"no-store"}).then(function(r){return r.ok?r.json():null}).then(function(d){if(!d||!d.on||!d.img||!torOk(d))return;var hid="";try{hid=localStorage.getItem("torhide")||""}catch(x){}if(hid==String(d.v))return;
+ fetch(SY.url+"/pub/tor/v.json",{cache:"no-store"}).then(function(r){return r.ok?r.json():null}).then(function(v){var h0="";try{h0=localStorage.getItem("torhide")||""}catch(x){}if(v!=null&&h0==String(v))return null;return fetch(SY.url+"/pub/tor.json",{cache:"no-store"}).then(function(r){return r.ok?r.json():null})}).then(function(d){if(!d||!d.on||!d.img||!torOk(d))return;var hid="";try{hid=localStorage.getItem("torhide")||""}catch(x){}if(hid==String(d.v))return;
   var o=document.createElement("div");o.id="torm";o.style.cssText="position:fixed;left:0;right:0;top:0;bottom:0;z-index:9999;background:rgba(0,0,0,.88);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:calc(16px + env(safe-area-inset-top,0px)) 16px calc(16px + env(safe-area-inset-bottom,0px))";
   o.onclick=function(ev){if(ev.target==o)torClose()};
   o.innerHTML='<img src="'+d.img+'" alt="Torneo" style="max-width:100%;max-height:76vh;border-radius:18px;box-shadow:0 10px 40px rgba(0,0,0,.6)"><div style="display:flex;gap:10px;margin-top:16px;width:100%;max-width:420px"><button id="torx" style="flex:1;padding:14px;border-radius:14px;border:0;background:#fff;color:#111;font:700 16px sans-serif;cursor:pointer">Chiudi</button><button id="torh" style="flex:1;padding:14px;border-radius:14px;border:2px solid #777;background:transparent;color:#fff;font:700 15px sans-serif;cursor:pointer">Non mostrare più</button></div>';
@@ -1386,15 +1386,27 @@ function DLV(){if(!DLS.t||Date.now()-DLS.t>12000)setTimeout(dlLoad,0);
  h+='<input class="sin" placeholder="Cerca nome o telefono" value="'+e(DLS.q)+'" oninput="DLS.q=this.value;DLS.lim=60;dlRef()"><div id="dll">'+dlList()+'</div>';
  return h+'<p class="mu" style="margin:14px 8px;font-size:13px"><span>Qui trovi chi ha fatto cosa e quando: appuntamenti nuovi, spostati ed eliminati, orari e messaggi ai clienti. Ogni voce si cancella da sola dopo due mesi. Non ci sono le modifiche precedenti a questo aggiornamento né gli appuntamenti vecchi che l’app cancella da sola.</span></p></div>'}
 function ordn(x){var n=parseFloat(String(x.id).replace(/^q/,""));return isNaN(n)?0:n}
+var CFE={e:null,x:null,t:0,off:0};
+function jcfg(){var url=SY.url+"/pub/cfg.json",prs=function(x){return x==null||x===""?null:JSON.parse(x)};
+ var plain=function(){return fetch(url,{cache:"no-store"}).then(function(r){if(!r.ok)throw 0;return r.text()}).then(function(x){CFE.x=x;CFE.t=Date.now();CFE.e=null;return x})};
+ if(CFE.off){if(CFE.x!=null&&Date.now()-CFE.t<10000)return Promise.resolve(prs(CFE.x));return plain().then(prs)}
+ var h={"X-Firebase-ETag":"true"};if(CFE.e&&CFE.x!=null)h["If-None-Match"]=CFE.e;
+ return fetch(url,{cache:"no-store",headers:h}).then(function(r){
+  if(r.status==304&&CFE.x!=null){CFE.t=Date.now();return prs(CFE.x)}
+  if(!r.ok)throw 0;
+  var e=r.headers.get("etag");
+  return r.text().then(function(x){CFE.x=x;CFE.t=Date.now();CFE.e=e;if(!e)CFE.off=1;return prs(x)})
+ },function(){return plain().then(function(x){CFE.off=1;return prs(x)})})}
+function spv(v){SY.pv=v;try{localStorage.setItem("spv",String(v))}catch(x){}}
 function syncPull(){if(SY.busy||(SY.pend&&SY.init))return;
  var ow=MODE=="owner";if(ow&&!isO())return;
  if(!ow&&ME&&ME.role=="client"&&!ME.k){var c1=cl1();if(c1&&c1.tel!=null){ME.k=ckey(c1.tel,c1.pin);sm()}}
  var k0=myK();SY.busy=true;
  var J=function(u,Q){return fetch(SY.url+u+".json"+(Q||""),{cache:"no-store"}).then(function(r){if(!r.ok)throw 0;return r.json()})};
  (ow?agetTok():Promise.resolve("")).then(function(t){var Q=t?"?auth="+t:"";
-  return J("/pub").then(function(d){d=d||{};var ps=[d];
+  return Promise.all([jcfg(),J("/pub/pv"),J("/pub/slots"),J("/pub/fx")]).then(function(a){var d={};if(a[0]!=null)d.cfg=a[0];if(a[1]!=null)d.pv=a[1];if(a[2]!=null)d.slots=a[2];if(a[3]!=null)d.fx=a[3];var ps=[d];
    if(ow)ps.push(J("/u",Q),dlOwn(J,Q),d.cfg?Promise.resolve(null):J("/main",Q));else ps.push(k0?J("/u/"+k0):Promise.resolve(null));
-   var pvn=d.pv||0;ps.push(pvn&&pvn!=SY.pv?J("/prod"):Promise.resolve(undefined));
+   var pvn=d.pv||0;ps.push(pvn&&(pvn!=SY.pv||(!SY.init&&!(C.products&&C.products.length)))?J("/prod"):Promise.resolve(undefined));
    return Promise.all(ps)})
  }).then(function(z){SY.busy=false;if(SY.pend&&SY.init)return;applyPull(z)}).catch(function(){SY.busy=false;SY.ok=false})}
 function applyPull(z){prStrip(z);try{if(!DLF0)dlBaseB();dlIn(z);if(DLCT)dlCfgNow()}catch(x){}var ow=MODE=="owner",d=z[0]||{},P=z[z.length-1],U=ow?z[1]:null,O=ow?z[2]:null,M=ow?z[3]:null,ud=ow?null:z[1],hasP=P!==undefined,first=!SY.init,k0=myK(),sig=nj([d,U,O,M,ud,hasP?P:0]);
@@ -1418,8 +1430,8 @@ function applyPull(z){prStrip(z);try{if(!DLF0)dlBaseB();dlIn(z);if(DLCT)dlCfgNow
   }
   CFGOK=true;var c=d.cfg||(M&&M.cfg);
   if(c){if(c.logo)C.logo=c.logo;if(c.theme)C.theme=c.theme;try{applyTheme()}catch(x){}try{applyLogo()}catch(x){}if(c.shop!=null)C.shop=c.shop;if(c.promo!=null)C.promo=c.promo;if(c.step!=null)C.step=c.step;if(c.nid!=null)C.nid=c.nid;if(c.hours)C.hours=c.hours;C.barbers=c.barbers||[];C.services=c.services||[];C.blocked=c.blocked||[];if(c.vd)C.set.viewDays=c.vd;C.set.cxm=+c.cx||0;C.gurl=c.gu||"";C.ig=igClean(c.ig||"");C.dx=dxClean(c.dx);C.addr=c.ad||"";C.set.nsm=+c.ns||0;C.set.maxa=+c.ma||0;C.cl=c.cl||null;if(c.nto)C.nto=c.nto;if(c.ao!=null){C.ao=c.ao?1:0;C.au=c.au||[]}try{applyTheme()}catch(x){}try{fixSv()}catch(x){}SY.cfs=JSON.stringify(cfgObj())}else SY.cfs="";
-  if(hasP){var pa=Object.keys(P||{}).map(function(i){return P[i]}).filter(function(x){return x&&typeof x=="object"}).sort(function(a,b){return ordp(a)-ordp(b)});SY.psn=smap(pa);SY.pv=d.pv||0;C.products=pa;C.cover=(P&&typeof P.cover=="string")?P.cover:"";SY.cvs=C.cover}
-  else if(first)SY.psn={};
+  if(hasP){var pa=Object.keys(P||{}).map(function(i){return P[i]}).filter(function(x){return x&&typeof x=="object"}).sort(function(a,b){return ordp(a)-ordp(b)});SY.psn=smap(pa);spv(d.pv||0);C.products=pa;C.cover=(P&&typeof P.cover=="string")?P.cover:"";SY.cvs=C.cover}
+  else if(first){var kp=d.pv&&d.pv==SY.pv&&C.products&&C.products.length;SY.psn=kp?smap(C.products):{};if(kp)SY.cvs=C.cover||""}
   lsave();try{dlDet()}catch(x){}try{dlBaseB();dlBaseC()}catch(x){}
   var u1=(C.onots||[]).filter(function(n){return n.u}).length;
   SY.sig=sig;SY.ok=true;
@@ -1430,7 +1442,7 @@ function applyPull(z){prStrip(z);try{if(!DLF0)dlBaseB();dlIn(z);if(DLCT)dlCfgNow
  }
  var ae=document.activeElement;
  if(ae&&/^(INPUT|TEXTAREA|SELECT)$/.test(ae.tagName)){SY.rr=true}else{SY.rr=false;try{H();R()}catch(x){}}}
-function syncStart(){if(MODE!="owner")try{cprune()}catch(x){}syncPull();setInterval(syncPull,5000);document.addEventListener("visibilitychange",function(){if(document.visibilityState=="visible")syncPull()})}
+function syncStart(){if(MODE!="owner")try{cprune()}catch(x){}(function w(n){if(PRL||n>60)syncPull();else setTimeout(function(){w(n+1)},25)})(0);setInterval(syncPull,5000);document.addEventListener("visibilitychange",function(){if(document.visibilityState=="visible")syncPull()})}
 function cprune(){var id=ME&&ME.role=="client"?ME.id:null;C.clients=(C.clients||[]).filter(function(x){return id!=null&&x.id==id});
  B.forEach(function(x){if(id==null||x.u!=id){x.c="";x.u=null;x.anon=1;delete x.tel}});
  (C.fixed||[]).forEach(function(x){var c=id!=null?cbyid(id):null;if(!c||!(x.cid==c.id||nts(c.n+" "+c.c)==nts(x.c)||(typeof fxMe=="function"&&fxMe(x)))){x.c="";x.anon=1}});
@@ -1441,7 +1453,7 @@ function dforce(){if(!isO())return;if(!DUc){DUc=1;T("Tocca di nuovo: sostituisce
  (C.products||[]).forEach(function(x){if(x&&x.id!=null)pr[skey(x.id)]=x});
  var dv=pubDerive(),pb={cfg:cfgObj(),pv:Date.now(),slots:dv.sl,fx:dv.fx};
  agetTok().then(function(t){var Q=t?"?auth="+t:"",F=function(p,m,b){return fetch(SY.url+p+".json"+Q,{method:m,body:b===undefined?undefined:JSON.stringify(b)}).then(function(r){if(!r.ok)throw 0})};
-  return F("/pub","PUT",pb).then(function(){return F("/u","PUT",u)}).then(function(){return F("/own","PATCH",dlKeep(ow2))}).then(function(){return F("/prod","PUT",pr)}).then(function(){return F("/main","DELETE")})}).then(function(){SY.sig="";SY.pv=0;SY.snap={};SY.psig="";SY.mig=false;SY.pend=false;T("Dati caricati online");syncPull()}).catch(function(){T("Caricamento non riuscito")});R()}
+  return F("/pub","PUT",pb).then(function(){return F("/u","PUT",u)}).then(function(){return F("/own","PATCH",dlKeep(ow2))}).then(function(){return F("/prod","PUT",pr)}).then(function(){return F("/main","DELETE")})}).then(function(){SY.sig="";spv(0);SY.snap={};SY.psig="";SY.mig=false;SY.pend=false;T("Dati caricati online");syncPull()}).catch(function(){T("Caricamento non riuscito")});R()}
 
 function e(s){return String(s).replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;")}
 var DL=LGX.DL,DS=LGX.DS,DN=LGX.DNl,MS=LGX.MS;
@@ -1822,7 +1834,7 @@ function BKV(){if(!isO()||MODE!="owner")return"";var l=0;try{l=+(localStorage.ge
  h='<h3 class="sh">Backup dei dati</h3><div class="sc"><span><b>Salva una copia dei dati</b><small>Ultimo backup su file: '+st+(!l||dd>7?' · conviene farne uno':'')+'</small></span><button class="lk" onclick="bkExp()">Salva</button></div><div class="sc"><span><b>Ripristina da file</b><small>Scegli un backup salvato in precedenza</small></span><button class="lk" onclick="document.getElementById(\'bkf\').click()">Scegli</button></div><input id="bkf" type="file" accept=".json,application/json" style="display:none" onchange="bkImp(this)">';
  if(L.length){h+='<div class="mu" style="margin:6px 8px;font-size:13px">Copie automatiche sul telefono (una al giorno, ultime 8)</div>';L.forEach(function(x,i){h+='<div class="sc"><span><b>'+(x.p?'Prima di un ripristino · ':'')+new Date(x.t).toLocaleDateString(LGX.loc,{day:"numeric",month:"long"})+'</b><small>'+x.nc+' clienti · '+x.nb+' prenotazioni</small></span><button class="lk" onclick="bkRL('+i+')">Ripristina</button></div>'})}
  return h}
-function qpushO(){try{if(!isO()||MODE!="owner"||!C.queue||!C.queue.length)return;var t0=iso(new Date()),S=[],ch=0;try{S=JSON.parse(localStorage.getItem("nfq")||"[]")}catch(x){}C.queue.forEach(function(x){if(!x||x.d<t0||S.indexOf(String(x.id))>=0)return;var f=fq(x.d,x.b);if(!f.length)return;var c=x.cid!=null?cbyid(x.cid):null;S.push(String(x.id));ch=1;if(c&&c.nt)nfy(c.nt,"Si è liberato un posto con "+bn(x.b)+" · "+lab(x.d)+" alle "+f[0])});if(ch)localStorage.setItem("nfq",JSON.stringify(S.slice(-200)))}catch(x){}}
+function qpushO(){try{if(!isO()||MODE!="owner"||!C.queue||!C.queue.length)return;var t0=iso(new Date()),S=[],ch=0;try{S=JSON.parse(localStorage.getItem("nfq")||"[]")}catch(x){}var qn=0;C.queue.forEach(function(x){if(!x||x.d<t0||x.n||S.indexOf(String(x.id))>=0)return;var f=fq(x.d,x.b);if(!f.length)return;var c=x.cid!=null?cbyid(x.cid):null;S.push(String(x.id));ch=1;if(c&&c.nt){nfy(c.nt,"Si è liberato un posto con "+bn(x.b)+" · "+lab(x.d)+" alle "+f[0]);x.n=Date.now();qn=1}});if(ch)localStorage.setItem("nfq",JSON.stringify(S.slice(-200)));if(qn)sv2()}catch(x){}}
 setInterval(qpushO,20000);setTimeout(bkChk,6000);setInterval(bkChk,600000);setInterval(function(){try{if(isO()&&MODE=="owner"&&tab=="home"){var a=document.activeElement;if(a&&/INPUT|SELECT|TEXTAREA/.test(a.tagName))return;R()}}catch(x){}},60000);
 function addO(m){C.onots.unshift({id:Date.now()+Math.random(),m:m,u:1,cid:(MODE!="owner"&&ME&&ME.role=="client")?ME.id:null});C.onots=C.onots.slice(0,50);if(MODE!="owner")nfy(C.nto,m)}
 function boff(b,ds){var r=null;(C.barbers||[]).forEach(function(x){if(x.id==b&&x.off)x.off.forEach(function(o){if(ds>=o.f&&ds<=(o.u||o.f))r=o})});return r}
@@ -2147,7 +2159,7 @@ function calAdd(){var x=CALW;if(!x)return;var ics=calIcs(x);CALD=1;var b=documen
 function calFile(){var x=CALW;if(!x)return;try{var u=URL.createObjectURL(new Blob([calIcs(x)],{type:"text/calendar;charset=utf-8"})),a=document.createElement("a");a.href=u;a.download="appuntamento.ics";document.body.appendChild(a);a.click();setTimeout(function(){a.remove()},800)}catch(e5){window.open("data:text/calendar;charset=utf-8,"+encodeURIComponent(calIcs(x)))}}
 function calClose(){if(!CALD)return;var w=document.getElementById("calw");if(w)w.remove();CALW=null;try{sset("calp","null")}catch(e3){}R()}
 setInterval(function(){try{if(MODE=="owner"||CALW)return;var id=ld("calp");if(id==null)return;var x=B.filter(function(y){return y.id==id&&!y.anon})[0];if(x)calShow(x);else sset("calp","null")}catch(e4){}},2000);
-var BUILD="b2468";
+var BUILD="b2470";
 (function(){function cur(){return parseInt(String(BUILD).slice(1),10)||0}
  function show(b){if(document.getElementById("upd"))return;var d=document.createElement("div");d.id="upd";d.style.cssText="position:fixed;inset:0;z-index:2000;overflow:auto;display:flex;align-items:center;justify-content:center;padding:28px 24px;background:#0b0b0c;color:#fff;text-align:center;font:600 16px/1.4 Georgia,serif";
   d.innerHTML='<div style="max-width:420px"><h1 style="margin:0 0 12px;font-size:26px">Aggiornamento necessario</h1><p style="color:#a9b4bf;margin:0 0 26px">È disponibile una nuova versione dell’app. Per continuare a prenotare e usare l’app devi aggiornarla.</p><button style="width:100%;border:0;border-radius:6px;padding:16px;background:#ffffff;color:#111;font:700 17px Quicksand,sans-serif;letter-spacing:1px;text-transform:uppercase;cursor:pointer">Aggiorna ora</button><p id="updm" style="color:#a9b4bf;font-size:14px;min-height:20px;margin-top:14px"></p></div>';
