@@ -1430,6 +1430,17 @@ function jcfg(){var url=SY.url+"/pub/cfg.json",prs=function(x){return x==null||x
   var e=r.headers.get("etag");
   return r.text().then(function(x){CFE.x=x;CFE.t=Date.now();CFE.e=e;if(!e)CFE.off=1;return prs(x)})
  },function(){return plain().then(function(x){CFE.off=1;return prs(x)})})}
+var JET={},JEO=0;
+function JE(u){var url=SY.url+u+".json",S=JET[u]||(JET[u]={e:null,x:null}),prs=function(x){return x==null||x===""?null:JSON.parse(x)};
+ var plain=function(){return fetch(url,{cache:"no-store"}).then(function(r){if(!r.ok)throw 0;return r.text()}).then(function(x){S.x=x;S.e=null;return prs(x)})};
+ if(JEO)return plain();
+ var h={"X-Firebase-ETag":"true"};if(S.e&&S.x!=null)h["If-None-Match"]=S.e;
+ return fetch(url,{cache:"no-store",headers:h}).then(function(r){
+  if(r.status==304&&S.x!=null)return prs(S.x);
+  if(!r.ok)throw 0;
+  var e=r.headers.get("etag");
+  return r.text().then(function(x){S.x=x;S.e=e;if(!e)JEO=1;return prs(x)})
+ },function(){return plain().then(function(v){JEO=1;return v})})}
 function spv(v){SY.pv=v;try{localStorage.setItem("spv",String(v))}catch(x){}}
 var CVQ=0;function cvFix(){try{if(CVQ||!SY.init||C.cover||SY.pend)return;CVQ=1;fetch(SY.url+"/prod/cover.json",{cache:"no-store"}).then(function(r){if(!r.ok)throw 0;return r.json()}).then(function(c){if(typeof c=="string"&&c.indexOf("data:")==0&&!C.cover&&!SY.pend){C.cover=c;SY.cvs=c;lsave();if(!isO()){try{R()}catch(x){}}}}).catch(function(){CVQ=0})}catch(x){}}
 function syncPull(){if(SY.busy||(SY.pend&&SY.init))return;
@@ -1438,8 +1449,8 @@ function syncPull(){if(SY.busy||(SY.pend&&SY.init))return;
  var k0=myK();SY.busy=true;
  var J=function(u,Q){return fetch(SY.url+u+".json"+(Q||""),{cache:"no-store"}).then(function(r){if(!r.ok)throw 0;return r.json()})};
  (ow?agetTok():Promise.resolve("")).then(function(t){var Q=t?"?auth="+t:"";
-  return Promise.all([jcfg(),J("/pub/pv"),J("/pub/slots"),J("/pub/fx")]).then(function(a){var d={};if(a[0]!=null)d.cfg=a[0];if(a[1]!=null)d.pv=a[1];if(a[2]!=null)d.slots=a[2];if(a[3]!=null)d.fx=a[3];var ps=[d];
-   if(ow)ps.push(J("/u",Q),dlOwn(J,Q),d.cfg?Promise.resolve(null):J("/main",Q));else ps.push(k0?J("/u/"+k0):Promise.resolve(null));
+  return Promise.all([jcfg(),J("/pub/pv"),JE("/pub/slots"),JE("/pub/fx")]).then(function(a){var d={};if(a[0]!=null)d.cfg=a[0];if(a[1]!=null)d.pv=a[1];if(a[2]!=null)d.slots=a[2];if(a[3]!=null)d.fx=a[3];var ps=[d];
+   if(ow)ps.push(J("/u",Q),dlOwn(J,Q),d.cfg?Promise.resolve(null):J("/main",Q));else ps.push(k0?JE("/u/"+k0):Promise.resolve(null));
    var pvn=d.pv||0;ps.push(pvn&&(pvn!=SY.pv||(!SY.init&&!(C.products&&C.products.length)))?J("/prod"):Promise.resolve(undefined));
    return Promise.all(ps)})
  }).then(function(z){SY.busy=false;if(SY.pend&&SY.init)return;applyPull(z);cvFix()}).catch(function(){SY.busy=false;SY.ok=false})}
@@ -2039,7 +2050,7 @@ function calAdd(){var x=CALW;if(!x)return;var ics=calIcs(x);CALD=1;var b=documen
 function calFile(){var x=CALW;if(!x)return;try{var u=URL.createObjectURL(new Blob([calIcs(x)],{type:"text/calendar;charset=utf-8"})),a=document.createElement("a");a.href=u;a.download="appuntamento.ics";document.body.appendChild(a);a.click();setTimeout(function(){a.remove()},800)}catch(e5){window.open("data:text/calendar;charset=utf-8,"+encodeURIComponent(calIcs(x)))}}
 function calClose(){if(!CALD)return;var w=document.getElementById("calw");if(w)w.remove();CALW=null;try{sset("calp","null")}catch(e3){}R()}
 setInterval(function(){try{if(MODE=="owner"||CALW)return;var id=ld("calp");if(id==null)return;var x=B.filter(function(y){return y.id==id&&!y.anon})[0];if(x)calShow(x);else sset("calp","null")}catch(e4){}},2000);
-var BUILD="b2478";
+var BUILD="b2481";
 (function(){function cur(){return parseInt(String(BUILD).slice(1),10)||0}
  function show(b){if(document.getElementById("upd"))return;var d=document.createElement("div");d.id="upd";d.style.cssText="position:fixed;inset:0;z-index:2000;overflow:auto;display:flex;align-items:center;justify-content:center;padding:28px 24px;background:#0b0b0c;color:#fff;text-align:center;font:600 16px/1.4 Georgia,serif";
   d.innerHTML='<div style="max-width:420px"><h1 style="margin:0 0 12px;font-size:26px">Aggiornamento necessario</h1><p style="color:#a9b4bf;margin:0 0 26px">È disponibile una nuova versione dell’app. Per continuare a prenotare e usare l’app devi aggiornarla.</p><button style="width:100%;border:0;border-radius:6px;padding:16px;background:#ffffff;color:#111;font:700 17px Quicksand,sans-serif;letter-spacing:1px;text-transform:uppercase;cursor:pointer">Aggiorna ora</button><p id="updm" style="color:#a9b4bf;font-size:14px;min-height:20px;margin-top:14px"></p></div>';
